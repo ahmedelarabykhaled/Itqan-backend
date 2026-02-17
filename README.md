@@ -3,7 +3,7 @@
 
 **Itqan (إتقان)** is a Quran learning and memorization platform designed to digitally manage Quran education centers and provide a modern mobile experience for students and teachers.
 
-The system connects **students, teachers, and administrators** in one unified platform where Quran memorization, revision, attendance, communication, and evaluation are managed efficiently.
+The system allows **users** to Quran memorization, revision, and evaluation are managed efficiently.
 
 ---
 
@@ -12,9 +12,7 @@ The system connects **students, teachers, and administrators** in one unified pl
 Traditional Quran centers rely heavily on paper records and manual follow-ups.
 This causes problems such as:
 
-* Lost student records
 * Difficulty tracking memorization progress
-* Weak communication with parents
 * Administrative overload on secretaries
 * No measurable performance indicators
 
@@ -24,21 +22,6 @@ This causes problems such as:
 
 ## 👥 System Roles
 
-### Student
-
-* Track memorization (Hifz) progress
-* Review assigned portions (Muraja’ah)
-* Receive announcements and homework
-* Reset password via verification code (OTP)
-
-### Teacher
-
-* Record daily memorization
-* Evaluate recitation
-* Track attendance
-* Manage assigned groups
-* Send notes about students
-
 ### Administration / Secretary
 
 * Manage students & groups
@@ -46,21 +29,11 @@ This causes problems such as:
 * View attendance reports
 * Manage teachers schedules
 
-### Parent
-
-* Follow student progress
-* Receive notifications
-* Track absence and evaluation
-
 ---
 
 ## 🧠 Core Features
 
 * Student memorization tracking (by Surah & Ayah)
-* Attendance management
-* Groups & class scheduling
-* Teacher evaluations
-* Parent notifications
 * Broadcast messaging
 * Authentication via API tokens
 * Password reset using OTP code
