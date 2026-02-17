@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CustomerUpdate extends FormRequest
+class CustomerLoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,22 +22,18 @@ class CustomerUpdate extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'nullable|string|max:255',
-            'password' => 'nullable|string|min:6|confirmed',
-            'gender' => 'nullable|in:male,female',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'email' => 'required|email',
+            'password' => 'required|string|min:6',
         ];
     }
 
     public function messages()
     {
         return [
+            'email.required' => __('customers.email_required'),
+            'email.email' => __('customers.email_email'),
+            'password.required' => __('customers.password_required'),
             'password.min' => __('customers.password_min'),
-            'password_confirmation.required_with' => __('customers.password_confirmation_required_with'),
-            'gender.in' => __('customers.gender_in'),
-            'avatar.image' => __('customers.avatar_image'),
-            'avatar.mimes' => __('customers.avatar_mimes'),
-            'avatar.max' => __('customers.avatar_max'),
         ];
     }
 }

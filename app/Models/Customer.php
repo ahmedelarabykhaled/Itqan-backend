@@ -4,10 +4,15 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Auth\Notifications\ResetPassword;
 
-class Customer extends Authenticatable
+class Customer extends Authenticatable implements CanResetPassword
 {
     use HasApiTokens;
+    use Notifiable;
+    
     protected $fillable = [
         'name',
         'email',
@@ -41,5 +46,10 @@ class Customer extends Authenticatable
     public function scopeVerified($query)
     {
         return $query->whereNotNull('email_verified_at');
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPassword($token));
     }
 }

@@ -8,8 +8,8 @@ Route::post('register', [CustomersAuthController::class, 'register']);
 Route::post('social-login', [CustomersAuthController::class, 'socialLogin']);
 Route::post('social-register', [CustomersAuthController::class, 'socialRegister']);
 Route::post('forgot-password', [CustomersAuthController::class, 'forgotPassword']);
-Route::post('reset-password', [CustomersAuthController::class, 'resetPassword']);
-Route::post('verify-code', [CustomersAuthController::class, 'verifyCode']);
+Route::post('reset-password', [CustomersAuthController::class, 'resetPassword'])->name('password.reset');
+Route::post('validate-code', [CustomersAuthController::class, 'validateCode']);
 
 // protected routes
 Route::middleware('auth:sanctum')->group(function () {
