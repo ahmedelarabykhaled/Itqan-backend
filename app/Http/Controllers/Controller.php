@@ -10,6 +10,12 @@ use OpenApi\Annotations as OA;
  *      title="L5 Swagger OpenApi",
  *      description="L5 Swagger OpenApi description"
  * )
+ * @OA\SecurityScheme(
+ *     securityScheme="sanctum",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT"
+ * )
  */
 abstract class Controller
 {

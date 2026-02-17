@@ -22,12 +22,17 @@ class Customer extends Authenticatable implements CanResetPassword
         'provider',
         'provider_id',
         'email_verified_at',
+        'verification_code',
+        'verification_code_expires_at',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
         'provider_id',
+        'verification_code',
+        'verification_code_expires_at',
+        'created_at',
     ];
 
     /**
@@ -51,5 +56,10 @@ class Customer extends Authenticatable implements CanResetPassword
     public function sendPasswordResetNotification($token)
     {
         $this->notify(new ResetPassword($token));
+    }
+
+    public function getAvatarAttribute($value)
+    {
+        return $value ? url('storage/' . $value) : null;
     }
 }

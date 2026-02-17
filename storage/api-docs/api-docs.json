@@ -6,137 +6,6 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/customers/auth/login": {
-            "post": {
-                "tags": [
-                    "Customers Authentication"
-                ],
-                "summary": "Customer login",
-                "description": "Customer login",
-                "operationId": "e3463288b44bd909bf9c557c32eead22",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "email",
-                                    "password"
-                                ],
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "example": "john@example.com"
-                                    },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "password"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Customer logged in successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Customer logged in successfully"
-                                        },
-                                        "customer": {
-                                            "properties": {
-                                                "id": {
-                                                    "type": "integer",
-                                                    "example": 1
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "example": "John Doe"
-                                                },
-                                                "email": {
-                                                    "type": "string",
-                                                    "format": "email",
-                                                    "example": "[EMAIL_ADDRESS]"
-                                                },
-                                                "gender": {
-                                                    "type": "string",
-                                                    "enum": [
-                                                        "male",
-                                                        "female"
-                                                    ],
-                                                    "example": "male"
-                                                },
-                                                "avatar": {
-                                                    "type": "string",
-                                                    "example": "avatar.jpg"
-                                                },
-                                                "created_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2022-01-01T00:00:00.000000Z"
-                                                },
-                                                "updated_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2022-01-01T00:00:00.000000Z"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "token": {
-                                            "type": "string",
-                                            "example": "auth-token"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Bad Request"
-                                        },
-                                        "errors": {
-                                            "properties": {
-                                                "email": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "example": "The email field is required."
-                                                    }
-                                                },
-                                                "password": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "example": "The password field is required."
-                                                    }
-                                                }
-                                            },
-                                            "type": "object"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
         "/api/customers/auth/register": {
             "post": {
                 "tags": [
@@ -144,7 +13,7 @@
                 ],
                 "summary": "Customer register",
                 "description": "Customer register",
-                "operationId": "346569802794d49c2ade44bd54164ddf",
+                "operationId": "75e5a4974646ef316240ef5d35726f0b",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -286,6 +155,137 @@
                 }
             }
         },
+        "/api/customers/auth/login": {
+            "post": {
+                "tags": [
+                    "Customers Authentication"
+                ],
+                "summary": "Customer login",
+                "description": "Customer login",
+                "operationId": "b452c39e730022bdc0cefdaed140e4cb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Customer logged in successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer logged in successfully"
+                                        },
+                                        "customer": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "format": "email",
+                                                    "example": "[EMAIL_ADDRESS]"
+                                                },
+                                                "gender": {
+                                                    "type": "string",
+                                                    "enum": [
+                                                        "male",
+                                                        "female"
+                                                    ],
+                                                    "example": "male"
+                                                },
+                                                "avatar": {
+                                                    "type": "string",
+                                                    "example": "avatar.jpg"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2022-01-01T00:00:00.000000Z"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2022-01-01T00:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "auth-token"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bad Request"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "example": "The email field is required."
+                                                    }
+                                                },
+                                                "password": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "example": "The password field is required."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/customers/auth/logout": {
             "post": {
                 "tags": [
@@ -293,7 +293,7 @@
                 ],
                 "summary": "Customer logout",
                 "description": "Customer logout",
-                "operationId": "7fdf8a2ab707586fb6b2b723327bdad4",
+                "operationId": "a1283e2eb750ded414d35619eaba4ce0",
                 "responses": {
                     "200": {
                         "description": "Successful operation"
@@ -313,7 +313,7 @@
                 ],
                 "summary": "Customer update",
                 "description": "Customer update",
-                "operationId": "0b8c2109a5e4ccda97c9d0e36685149f",
+                "operationId": "ae93ae978e2c3427e5d87ab209b3a349",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -372,14 +372,52 @@
                 ]
             }
         },
-        "/api/customers/auth/social-login": {
+        "/api/customers/auth/forgot-password": {
             "post": {
                 "tags": [
                     "Customers Authentication"
                 ],
-                "summary": "Customer social login",
-                "description": "Customer social login",
-                "operationId": "389df82e9e967dbac54f5af6ac81ef51",
+                "summary": "Customer forgot password",
+                "description": "Customer forgot password",
+                "operationId": "0a86cab3c42f6aa6445bbcc56020cd8b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/api/customers/auth/reset-password": {
+            "post": {
+                "tags": [
+                    "Customers Authentication"
+                ],
+                "summary": "Customer reset password",
+                "description": "Customer reset password",
+                "operationId": "5ccb4df80981643e93b66d4e78e93c15",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -391,16 +429,59 @@
                                         "format": "email",
                                         "example": "john@example.com"
                                     },
-                                    "provider": {
+                                    "token": {
                                         "type": "string",
-                                        "enum": [
-                                            "google",
-                                            "facebook",
-                                            "twitter"
-                                        ],
-                                        "example": "google"
+                                        "example": "123456"
                                     },
-                                    "provider_id": {
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "Not Found"
+                    }
+                }
+            }
+        },
+        "/api/customers/auth/activate-account": {
+            "post": {
+                "tags": [
+                    "Customers Authentication"
+                ],
+                "summary": "Customer activate account",
+                "description": "Customer activate account",
+                "operationId": "5ea1c54ac0e3477f19fecce34d8f941e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "john@example.com"
+                                    },
+                                    "code": {
                                         "type": "string",
                                         "example": "123456"
                                     }
@@ -423,14 +504,37 @@
                 }
             }
         },
+        "/api/customers/profile": {
+            "get": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Get customer profile",
+                "description": "Get customer profile",
+                "operationId": "d3c979277b503b4cc2c14ee9d13d47c6",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/customers/auth/social-register": {
             "post": {
                 "tags": [
-                    "Customers Authentication"
+                    "Customers Social Authentication"
                 ],
                 "summary": "Customer social register",
                 "description": "Customer social register",
-                "operationId": "5120d44b4dd448a9a010978383ad2078",
+                "operationId": "35e81d6867f506640cb0a57a1534256b",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -490,52 +594,14 @@
                 }
             }
         },
-        "/api/customers/auth/forgot-password": {
+        "/api/customers/auth/social-login": {
             "post": {
                 "tags": [
-                    "Customers Authentication"
+                    "Customers Social Authentication"
                 ],
-                "summary": "Customer forgot password",
-                "description": "Customer forgot password",
-                "operationId": "c17b7b77e46b464895e0923739052adf",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "example": "john@example.com"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    }
-                }
-            }
-        },
-        "/api/customers/auth/reset-password": {
-            "post": {
-                "tags": [
-                    "Customers Authentication"
-                ],
-                "summary": "Customer reset password",
-                "description": "Customer reset password",
-                "operationId": "d32d3ca95a19928f0356a5304eb5f152",
+                "summary": "Customer social login",
+                "description": "Customer social login",
+                "operationId": "d5d53b53af4d27577cb34a723d6d6c98",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -547,59 +613,16 @@
                                         "format": "email",
                                         "example": "john@example.com"
                                     },
-                                    "token": {
+                                    "provider": {
                                         "type": "string",
-                                        "example": "123456"
+                                        "enum": [
+                                            "google",
+                                            "facebook",
+                                            "twitter"
+                                        ],
+                                        "example": "google"
                                     },
-                                    "password": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "password"
-                                    },
-                                    "password_confirmation": {
-                                        "type": "string",
-                                        "format": "password",
-                                        "example": "password"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "Not Found"
-                    }
-                }
-            }
-        },
-        "/api/customers/auth/validate-code": {
-            "post": {
-                "tags": [
-                    "Customers Authentication"
-                ],
-                "summary": "Customer validate code",
-                "description": "Customer validate code",
-                "operationId": "db86808b86fe687d780e9fe867ef0968",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "email": {
-                                        "type": "string",
-                                        "format": "email",
-                                        "example": "john@example.com"
-                                    },
-                                    "token": {
+                                    "provider_id": {
                                         "type": "string",
                                         "example": "123456"
                                     }
@@ -646,6 +669,14 @@
         {
             "name": "Customers Authentication",
             "description": "Customers Authentication"
+        },
+        {
+            "name": "Customers",
+            "description": "Customers"
+        },
+        {
+            "name": "Customers Social Authentication",
+            "description": "Customers Social Authentication"
         }
     ]
 }

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ValidateCodeRequest extends FormRequest
+class ActivateAccountRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,8 @@ class ValidateCodeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|exists:customers,email',
-            'token' => 'required|string',
+            'email' => 'required|email',
+            'code' => 'required|string|min:6',
         ];
     }
 

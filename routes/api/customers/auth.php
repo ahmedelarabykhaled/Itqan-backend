@@ -1,18 +1,19 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\CustomersAuthController;
+use App\Http\Controllers\Api\Customers\AuthController;
+use App\Http\Controllers\Api\Customers\SocialAuthController;
 
-Route::post('login', [CustomersAuthController::class, 'login']);
-Route::post('register', [CustomersAuthController::class, 'register']);
-Route::post('social-login', [CustomersAuthController::class, 'socialLogin']);
-Route::post('social-register', [CustomersAuthController::class, 'socialRegister']);
-Route::post('forgot-password', [CustomersAuthController::class, 'forgotPassword']);
-Route::post('reset-password', [CustomersAuthController::class, 'resetPassword'])->name('password.reset');
-Route::post('validate-code', [CustomersAuthController::class, 'validateCode']);
-
+Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
+Route::post('social-login', [SocialAuthController::class, 'socialLogin']);
+Route::post('social-register', [SocialAuthController::class, 'socialRegister']);
+Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
+Route::post('activate-account', [AuthController::class, 'activateAccount']);
+Route::put('update', [AuthController::class, 'update']);
 // protected routes
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('logout', [CustomersAuthController::class, 'logout']);
-    Route::put('update', [CustomersAuthController::class, 'update']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::put('update', [AuthController::class, 'update']);
 });

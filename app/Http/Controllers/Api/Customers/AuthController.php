@@ -1,34 +1,98 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Customers;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CustomerLoginRequest;
+use Illuminate\Http\Request;
 use App\Http\Requests\CustomerRegisterRequest;
+use App\Http\Requests\CustomerLoginRequest;
 use App\Http\Requests\CustomerUpdateRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\ResetPasswordRequest;
-use App\Http\Requests\SocialRegisterRequest;
 use App\Http\Requests\ValidateCodeRequest;
-use App\Http\Requests\SocialLoginRequest;
+use App\Http\Requests\ActivateAccountRequest;
 use App\Models\Customer;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use App\Notifications\ResetPasswordOtpNotification;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-/**
- * @OA\SecurityScheme(
- *     securityScheme="sanctum",
- *     type="http",
- *     scheme="bearer",
- *     bearerFormat="JWT"
- * )
- */
+use App\Notifications\ResetPasswordOtpNotification;
+use App\Notifications\ActivateAccountOtpNotification;
+use Illuminate\Support\Facades\Storage;
 
-class CustomersAuthController extends Controller
+class AuthController extends Controller
 {
+    // register
+    /**
+     * @OA\Post(
+     *      path="/api/customers/auth/register",
+     *      tags={"Customers Authentication"},
+     *      summary="Customer register",
+     *      description="Customer register",
+     *      @OA\RequestBody(
+     *          required=true,
+     *
+     *          @OA\JsonContent(
+     *              required={"name", "email", "password", "gender"},
+     *
+     *              @OA\Property(property="name", type="string", example="John Doe"),
+     *              @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+     *              @OA\Property(property="password", type="string", format="password", example="password"),
+     *              @OA\Property(property="gender", type="string", enum={"male", "female"}, example="male"),
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Customer registered successfully",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="message", type="string", example="Customer registered successfully"),
+     *              @OA\Property(property="customer", type="object",
+     *                  @OA\Property(property="id", type="integer", example=1),
+     *                  @OA\Property(property="name", type="string", example="John Doe"),
+     *                  @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+     *                  @OA\Property(property="gender", type="string", enum={"male", "female"}, example="male"),
+     *                  @OA\Property(property="created_at", type="string", format="date-time", example="2022-01-01T00:00:00.000000Z"),
+     *                  @OA\Property(property="updated_at", type="string", format="date-time", example="2022-01-01T00:00:00.000000Z"),
+     *              )
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=400,
+     *          description="Bad Request",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="message", type="string", example="Bad Request"),
+     *              @OA\Property(property="errors", type="object",
+     *                  @OA\Property(property="name", type="array", @OA\Items(example="The name field is required.")),
+     *                  @OA\Property(property="email", type="array", @OA\Items(example="The email field is required.")),
+     *                  @OA\Property(property="password", type="array", @OA\Items(example="The password field is required.")),
+     *                  @OA\Property(property="gender", type="array", @OA\Items(example="The gender field is required.")),
+     *              )
+     *          )
+     *      )
+     * )
+     */
+    public function register(CustomerRegisterRequest $request)
+    {
+        $data = $request->validated();
+        // return "hello";
+        $otp = random_int(100000, 999999);
+        $data['verification_code'] = $otp;
+        $data['verification_code_expires_at'] = now()->addMinutes(10);
+
+        $customer = Customer::create($data);
+
+        $customer->notify(new ActivateAccountOtpNotification($otp));
+
+        return response()->json([
+            'message' => 'Verification code sent',
+            'customer' => $customer,
+        ], 201);
+    }
     /**
      * @OA\Post(
      *      path="/api/customers/auth/login",
@@ -103,72 +167,6 @@ class CustomersAuthController extends Controller
             'customer' => $customer,
             'token' => $token,
         ], 200);
-    }
-
-    // register
-    /**
-     * @OA\Post(
-     *      path="/api/customers/auth/register",
-     *      tags={"Customers Authentication"},
-     *      summary="Customer register",
-     *      description="Customer register",
-     *      @OA\RequestBody(
-     *          required=true,
-     *
-     *          @OA\JsonContent(
-     *              required={"name", "email", "password", "gender"},
-     *
-     *              @OA\Property(property="name", type="string", example="John Doe"),
-     *              @OA\Property(property="email", type="string", format="email", example="john@example.com"),
-     *              @OA\Property(property="password", type="string", format="password", example="password"),
-     *              @OA\Property(property="gender", type="string", enum={"male", "female"}, example="male"),
-     *          )
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=200,
-     *          description="Customer registered successfully",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="message", type="string", example="Customer registered successfully"),
-     *              @OA\Property(property="customer", type="object",
-     *                  @OA\Property(property="id", type="integer", example=1),
-     *                  @OA\Property(property="name", type="string", example="John Doe"),
-     *                  @OA\Property(property="email", type="string", format="email", example="john@example.com"),
-     *                  @OA\Property(property="gender", type="string", enum={"male", "female"}, example="male"),
-     *                  @OA\Property(property="created_at", type="string", format="date-time", example="2022-01-01T00:00:00.000000Z"),
-     *                  @OA\Property(property="updated_at", type="string", format="date-time", example="2022-01-01T00:00:00.000000Z"),
-     *              )
-     *          )
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=400,
-     *          description="Bad Request",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="message", type="string", example="Bad Request"),
-     *              @OA\Property(property="errors", type="object",
-     *                  @OA\Property(property="name", type="array", @OA\Items(example="The name field is required.")),
-     *                  @OA\Property(property="email", type="array", @OA\Items(example="The email field is required.")),
-     *                  @OA\Property(property="password", type="array", @OA\Items(example="The password field is required.")),
-     *                  @OA\Property(property="gender", type="array", @OA\Items(example="The gender field is required.")),
-     *              )
-     *          )
-     *      )
-     * )
-     */
-    public function register(CustomerRegisterRequest $request)
-    {
-        $data = $request->validated();
-        $customer = Customer::create($data);
-
-        return response()->json([
-            'message' => __('customers.customer_registered_successfully'),
-            'customer' => $customer,
-        ], 201);
     }
 
     // logout
@@ -270,7 +268,9 @@ class CustomersAuthController extends Controller
             $customer->password = Hash::make($request->password) ?? $customer->password;
             $customer->gender = $request->gender ?? $customer->gender;
             if ($request->hasFile('avatar')) {
-                $customer->avatar = $request->file('avatar')->store('avatars');
+                $file_name = "customers/avatars/" . $customer->id . "/" . time() . '.' . $request->file('avatar')->getClientOriginalExtension();
+                Storage::disk('public')->putFileAs( "", $request->file('avatar'), $file_name);
+                $customer->avatar = $file_name;
             }
             $customer->save();
 
@@ -285,105 +285,6 @@ class CustomersAuthController extends Controller
         ], 404);
     }
 
-    // social login
-    /**
-     * @OA\Post(
-     *      path="/api/customers/auth/social-login",
-     *      tags={"Customers Authentication"},
-     *      summary="Customer social login",
-     *      description="Customer social login",
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(
-     *              @OA\Property(property="email", type="string", format="email", example="john@example.com"),
-     *              @OA\Property(property="provider", type="string", enum={"google", "facebook", "twitter"}, example="google"),
-     *              @OA\Property(property="provider_id", type="string", example="123456"),
-     *          )  
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation"
-     *      ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="Bad Request"
-     *      ),
-     *      @OA\Response(
-     *          response=404,
-     *          description="Not Found"
-     *      )
-     * )
-     */
-    public function socialLogin(SocialLoginRequest $request)
-    {
-        $customer = Customer::where('provider', $request->provider)
-        ->where('provider_id', $request->provider_id)
-        ->where('email', $request->email)
-        ->first();
-
-        if (! $customer) {
-            return response()->json([
-                'message' => __('customers.customer_not_found'),
-            ], 404);
-        }
-        return response()->json([
-            'message' => __('customers.customer_logged_in_successfully'),
-            'customer' => $customer,
-            'token' => $customer->createToken('auth-token')->plainTextToken,
-        ], 200);
-    }
-
-    // social register
-    /**
-     * @OA\Post(
-     *      path="/api/customers/auth/social-register",
-     *      tags={"Customers Authentication"},
-     *      summary="Customer social register",
-     *      description="Customer social register",
-     *      @OA\RequestBody(
-     *          required=true,
-     *          @OA\JsonContent(
-     *              @OA\Property(property="name", type="string", example="John Doe"),
-     *              @OA\Property(property="email", type="string", format="email", example="john@example.com"),
-     *              @OA\Property(property="gender", type="string", enum={"male", "female"}, example="male"),
-     *              @OA\Property(property="avatar", type="string", example="avatar.jpg"),
-     *              @OA\Property(property="provider", type="string", enum={"google", "facebook", "twitter"}, example="google"),
-     *              @OA\Property(property="provider_id", type="string", example="123456"),
-     *          )
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="Successful operation"
-     *      ),
-     *      @OA\Response(
-     *          response=400,
-     *          description="Bad Request"
-     *      ),
-     *      @OA\Response(
-     *          response=404,
-     *          description="Not Found"
-     *      )
-     * )
-     */
-    public function socialRegister(SocialRegisterRequest $request)
-    {
-        $data = $request->validated();
-        $customer = Customer::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make(Str::random(10)),
-            'gender' => $data['gender'] ?? null,
-            'avatar' => $data['avatar'] ?? null,
-            'provider' => $data['provider'],
-            'provider_id' => $data['provider_id'],
-            'email_verified_at' => now(),
-        ]);
-
-        return response()->json([
-            'message' => __('customers.customer_registered_successfully'),
-            'customer' => $customer,
-        ], 201);
-    }
 
     // forgot password
     /**
@@ -538,18 +439,18 @@ class CustomersAuthController extends Controller
         ]);
     }
 
-    // validate code
+    // activate account
     /**
      * @OA\Post(
-     *      path="/api/customers/auth/validate-code",
+     *      path="/api/customers/auth/activate-account",
      *      tags={"Customers Authentication"},
-     *      summary="Customer validate code",
-     *      description="Customer validate code",
+     *      summary="Customer activate account",
+     *      description="Customer activate account",
      *      @OA\RequestBody(
      *          required=true,
      *          @OA\JsonContent(
      *              @OA\Property(property="email", type="string", format="email", example="john@example.com"),
-     *              @OA\Property(property="token", type="string", example="123456"),
+     *              @OA\Property(property="code", type="string", example="123456"),
      *          )
      *      ),
      *      @OA\Response(
@@ -566,7 +467,7 @@ class CustomersAuthController extends Controller
      *      )
      * )
      */
-    public function validateCode(ValidateCodeRequest $request)
+    public function activateAccount(ActivateAccountRequest $request)
     {
         $customer = Customer::where('email', $request->email)->first();
         if (! $customer) {
@@ -578,38 +479,31 @@ class CustomersAuthController extends Controller
             ], 404);
         }
 
-        $record = DB::table('password_reset_tokens')
-        ->where('email', $request->email)->first();
-
-        if (!$record) {
+        if ($customer->verification_code !== $request->code) {
             return response()->json([
-                'message' => __('customers.invalid_token'),
+                'message' => __('customers.invalid_code'),
                 'errors' => [
-                    'token' => [__('customers.invalid_token')],
-                ],
-            ], 400);
-        }
-        
-        if (now()->diffInMinutes($record->created_at) > 60) {
-            return response()->json([
-                'message' => __('customers.token_expired'),
-                'errors' => [
-                    'token' => [__('customers.token_expired')],
+                    'code' => [__('customers.invalid_code')],
                 ],
             ], 400);
         }
 
-        if (!Hash::check($request->token, $record->token)) {
+        if ($customer->verification_code_expires_at < now()) {
             return response()->json([
-                'message' => __('customers.invalid_token'),
+                'message' => __('customers.code_expired'),
                 'errors' => [
-                    'token' => [__('customers.invalid_token')],
+                    'code' => [__('customers.code_expired')],
                 ],
             ], 400);
         }
+
+        $customer->email_verified_at = now();
+        $customer->verification_code = null;
+        $customer->verification_code_expires_at = null;
+        $customer->save();
 
         return response()->json([
-            'message' => __('customers.token_is_valid')
-        ]);
+            'message' => 'Account activated successfully',
+        ], 200);
     }
 }
