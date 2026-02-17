@@ -1,59 +1,250 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Itqan — Quran Learning & Memorization Platform
+## خيركم من تعلم القرآن وعلمه
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Itqan (إتقان)** is a Quran learning and memorization platform designed to digitally manage Quran education centers and provide a modern mobile experience for students and teachers.
 
-## About Laravel
+The system connects **students, teachers, and administrators** in one unified platform where Quran memorization, revision, attendance, communication, and evaluation are managed efficiently.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Overview
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Traditional Quran centers rely heavily on paper records and manual follow-ups.
+This causes problems such as:
 
-## Learning Laravel
+* Lost student records
+* Difficulty tracking memorization progress
+* Weak communication with parents
+* Administrative overload on secretaries
+* No measurable performance indicators
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+**Itqan solves this by digitizing the entire center workflow.**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## 👥 System Roles
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Student
 
-### Premium Partners
+* Track memorization (Hifz) progress
+* Review assigned portions (Muraja’ah)
+* Receive announcements and homework
+* Reset password via verification code (OTP)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Teacher
 
-## Contributing
+* Record daily memorization
+* Evaluate recitation
+* Track attendance
+* Manage assigned groups
+* Send notes about students
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Administration / Secretary
 
-## Code of Conduct
+* Manage students & groups
+* Send broadcast messages
+* View attendance reports
+* Manage teachers schedules
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Parent
 
-## Security Vulnerabilities
+* Follow student progress
+* Receive notifications
+* Track absence and evaluation
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🧠 Core Features
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+* Student memorization tracking (by Surah & Ayah)
+* Attendance management
+* Groups & class scheduling
+* Teacher evaluations
+* Parent notifications
+* Broadcast messaging
+* Authentication via API tokens
+* Password reset using OTP code
+* Mobile-ready REST API
+* Swagger API documentation
+
+---
+
+## 🏗 Architecture
+
+The backend is built using a **RESTful API architecture** to support mobile applications.
+
+**Pattern:**
+Clean Architecture + Service Layer
+
+**Key Concepts:**
+
+* Stateless authentication
+* Token based access
+* Modular domain separation
+* Mobile-first design
+
+---
+
+## ⚙️ Technology Stack
+
+* PHP 8.4
+* Laravel 12
+* Laravel Sanctum (API Authentication)
+* MySQL
+* Swagger / OpenAPI Documentation
+* Notifications System
+* SMTP Email Service
+
+---
+
+## 🔐 Authentication
+
+The system uses **Token-Based Authentication**:
+
+* Each customer (student) logs in using email & password
+* API returns a personal access token
+* Token is used in all protected endpoints
+
+```
+Authorization: Bearer {token}
+```
+
+---
+
+## 🔑 Password Reset (OTP Based)
+
+Instead of email links, Itqan uses a **verification code system** suitable for mobile apps.
+
+### Flow
+
+1. User requests password reset
+2. System generates a 6-digit verification code
+3. Code is hashed and stored in `password_reset_tokens`
+4. Code is sent via email
+5. User submits code + new password
+6. Password is updated securely
+
+Security features:
+
+* Token hashing
+* Expiration time
+* Single-use verification
+* No sensitive data returned in API responses
+
+---
+
+## 📚 API Documentation
+
+Swagger documentation is available at:
+
+```
+/api/documentation
+```
+
+You can authorize using:
+
+```
+Bearer YOUR_TOKEN
+```
+
+---
+
+## 🚀 Installation
+
+```bash
+git clone https://github.com/your-repo/itqan.git
+cd itqan
+
+composer install
+cp .env.example .env
+php artisan key:generate
+```
+
+Configure database inside `.env`:
+
+```
+DB_DATABASE=itqan
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+Run migrations:
+
+```bash
+php artisan migrate
+```
+
+Generate storage link:
+
+```bash
+php artisan storage:link
+```
+
+Start server:
+
+```bash
+php artisan serve
+```
+
+---
+
+## 📧 Email Configuration
+
+Update `.env`:
+
+```
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=YOUR_USERNAME
+MAIL_PASSWORD=YOUR_PASSWORD
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS=noreply@itqan.com
+MAIL_FROM_NAME="Itqan"
+```
+
+Then clear cache:
+
+```bash
+php artisan optimize:clear
+```
+
+---
+
+## 🧪 Testing API
+
+You can test the API using:
+
+* Swagger UI
+* Postman
+* Mobile App
+
+Protected endpoints require Authorization header:
+
+```
+Accept: application/json
+Authorization: Bearer {token}
+```
+
+---
+
+## 📊 Future Enhancements
+
+* AI-assisted Tajweed correction
+* Voice recitation analysis
+* Automatic mistake detection
+* Parent mobile application
+* WhatsApp notifications
+* Online classes integration
+
+---
+
+## 📜 License
+
+This project is proprietary and developed for Quran educational centers.
+
+---
+
+## ❤️ Mission
+
+**Itqan aims to make Quran education organized, measurable, and accessible using modern technology while preserving the traditional learning spirit.**
