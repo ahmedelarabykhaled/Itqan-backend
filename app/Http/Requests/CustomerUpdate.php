@@ -23,19 +23,15 @@ class CustomerUpdate extends FormRequest
     {
         return [
             'name' => 'nullable|string|max:255',
-            'email' => 'nullable|email|unique:customers,email',
-            'password' => 'nullable|string|min:6',
-            'password_confirmation' => 'required_with=password|string|min:6',
+            'password' => 'nullable|string|min:6|confirmed',
             'gender' => 'nullable|in:male,female',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',   
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 
     public function messages()
     {
         return [
-            'email.email' => __('customers.email_email'),
-            'email.unique' => __('customers.email_unique'),
             'password.min' => __('customers.password_min'),
             'password_confirmation.required_with' => __('customers.password_confirmation_required_with'),
             'gender.in' => __('customers.gender_in'),

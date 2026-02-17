@@ -8,6 +8,11 @@
     "paths": {
         "/api/customers/auth/login": {
             "post": {
+                "tags": [
+                    "Customers Authentication"
+                ],
+                "summary": "Customer login",
+                "description": "Customer login",
                 "operationId": "e3463288b44bd909bf9c557c32eead22",
                 "requestBody": {
                     "required": true,
@@ -134,6 +139,11 @@
         },
         "/api/customers/auth/register": {
             "post": {
+                "tags": [
+                    "Customers Authentication"
+                ],
+                "summary": "Customer register",
+                "description": "Customer register",
                 "operationId": "346569802794d49c2ade44bd54164ddf",
                 "requestBody": {
                     "required": true,
@@ -278,16 +288,31 @@
         },
         "/api/customers/auth/logout": {
             "post": {
+                "tags": [
+                    "Customers Authentication"
+                ],
+                "summary": "Customer logout",
+                "description": "Customer logout",
                 "operationId": "7fdf8a2ab707586fb6b2b723327bdad4",
                 "responses": {
                     "200": {
                         "description": "Successful operation"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/customers/auth/update": {
             "put": {
+                "tags": [
+                    "Customers Authentication"
+                ],
+                "summary": "Customer update",
+                "description": "Customer update",
                 "operationId": "0b8c2109a5e4ccda97c9d0e36685149f",
                 "requestBody": {
                     "required": true,
@@ -297,11 +322,6 @@
                                 "properties": {
                                     "name": {
                                         "description": "Name",
-                                        "type": "string",
-                                        "format": "string"
-                                    },
-                                    "email": {
-                                        "description": "Email",
                                         "type": "string",
                                         "format": "string"
                                     },
@@ -344,11 +364,21 @@
                     "404": {
                         "description": "Not Found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/customers/auth/social-login": {
             "post": {
+                "tags": [
+                    "Customers Authentication"
+                ],
+                "summary": "Customer social login",
+                "description": "Customer social login",
                 "operationId": "389df82e9e967dbac54f5af6ac81ef51",
                 "responses": {
                     "200": {
@@ -359,6 +389,11 @@
         },
         "/api/customers/auth/social-register": {
             "post": {
+                "tags": [
+                    "Customers Authentication"
+                ],
+                "summary": "Customer social register",
+                "description": "Customer social register",
                 "operationId": "5120d44b4dd448a9a010978383ad2078",
                 "responses": {
                     "200": {
@@ -369,6 +404,11 @@
         },
         "/api/customers/auth/forgot-password": {
             "post": {
+                "tags": [
+                    "Customers Authentication"
+                ],
+                "summary": "Customer forgot password",
+                "description": "Customer forgot password",
                 "operationId": "c17b7b77e46b464895e0923739052adf",
                 "responses": {
                     "200": {
@@ -379,6 +419,11 @@
         },
         "/api/customers/auth/reset-password": {
             "post": {
+                "tags": [
+                    "Customers Authentication"
+                ],
+                "summary": "Customer reset password",
+                "description": "Customer reset password",
                 "operationId": "d32d3ca95a19928f0356a5304eb5f152",
                 "responses": {
                     "200": {
@@ -389,6 +434,11 @@
         },
         "/api/customers/auth/verify-code": {
             "post": {
+                "tags": [
+                    "Customers Authentication"
+                ],
+                "summary": "Customer verify code",
+                "description": "Customer verify code",
                 "operationId": "5e17f3fc3c5a3f5350d79ddcc9018a1c",
                 "responses": {
                     "200": {
@@ -407,5 +457,20 @@
                 }
             }
         }
-    }
+    },
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "http",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Customers Authentication",
+            "description": "Customers Authentication"
+        }
+    ]
 }
