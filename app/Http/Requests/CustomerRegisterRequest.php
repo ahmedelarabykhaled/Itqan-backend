@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class CustomerRegisterRequest extends FormRequest
+class CustomerRegisterRequest extends BaseFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +23,7 @@ class CustomerRegisterRequest extends FormRequest
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:customers,email',
             'password' => 'required|string|min:6',
-            'gender' => 'required|in:male,female'
+            'gender' => 'required|in:male,female',
         ];
     }
 

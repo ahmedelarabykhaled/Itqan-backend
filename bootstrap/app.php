@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Responses\ApiResponse;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -26,22 +27,37 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (AuthenticationException $exception, Request $request) {
             if ($request->expectsJson() || $request->is('api/*')) {
-                return response()->json([
-                    'message' => $exception->getMessage() ?: 'Unauthenticated.',
-                ], 401);
+                return ApiResponse::error(
+                    message: $exception->getMessage() ?: 'Unauthenticated.',
+                    status: 401
+                );
             }
 
             return null;
         });
 
         // Validation errors
-    $exceptions->render(function (ValidationException $e, Request $request) {
-        if ($request->is('api/*')) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation error',
-                'errors'  => $e->errors(),
-            ], 422);
-        }
-    });
+        $exceptions->render(function (ValidationException $e, Request $request) {
+            if ($request->is('api/*')) {
+                return ApiResponse::error(
+                    message: 'Validation error',
+                    errors: $e->errors(),
+                    status: 422
+                );
+            }
+
+            return null;
+        });
+
+        // handle 500 errors
+        $exceptions->render(function (Exception $e, Request $request) {
+            if ($request->is('api/*')) {
+                return ApiResponse::error(
+                    message: 'Server error',
+                    status: 500
+                );
+            }
+
+            return null;
+        });
     })->create();
