@@ -6,14 +6,14 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/customers/auth/register": {
+        "/api/v1/customers/auth/register": {
             "post": {
                 "tags": [
                     "Customers Authentication"
                 ],
                 "summary": "Customer register",
                 "description": "Customer register",
-                "operationId": "75e5a4974646ef316240ef5d35726f0b",
+                "operationId": "a68f5dc0ed52bcea295a17ab6a038da1",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -166,14 +166,14 @@
                 }
             }
         },
-        "/api/customers/auth/login": {
+        "/api/v1/customers/auth/login": {
             "post": {
                 "tags": [
                     "Customers Authentication"
                 ],
                 "summary": "Customer login",
                 "description": "Customer login",
-                "operationId": "b452c39e730022bdc0cefdaed140e4cb",
+                "operationId": "5b0625a23e04a9e7bc1aec2f39e59173",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -376,14 +376,14 @@
                 }
             }
         },
-        "/api/customers/auth/logout": {
+        "/api/v1/customers/auth/logout": {
             "post": {
                 "tags": [
                     "Customers Authentication"
                 ],
                 "summary": "Customer logout",
                 "description": "Customer logout",
-                "operationId": "a1283e2eb750ded414d35619eaba4ce0",
+                "operationId": "042f4156f4d021cc444e06bd25e22132",
                 "responses": {
                     "200": {
                         "description": "Customer logged out successfully",
@@ -425,14 +425,14 @@
                 ]
             }
         },
-        "/api/customers/auth/update": {
+        "/api/v1/customers/auth/update": {
             "put": {
                 "tags": [
                     "Customers Authentication"
                 ],
                 "summary": "Customer update",
                 "description": "Customer update",
-                "operationId": "ae93ae978e2c3427e5d87ab209b3a349",
+                "operationId": "fbb69e36421f98cd6d7d07aae8b1e1ba",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -605,14 +605,14 @@
                 ]
             }
         },
-        "/api/customers/auth/forgot-password": {
+        "/api/v1/customers/auth/forgot-password": {
             "post": {
                 "tags": [
                     "Customers Authentication"
                 ],
                 "summary": "Customer forgot password",
                 "description": "Customer forgot password",
-                "operationId": "0a86cab3c42f6aa6445bbcc56020cd8b",
+                "operationId": "d1a10d4b834501b47fa5d525b141f38c",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -742,14 +742,14 @@
                 }
             }
         },
-        "/api/customers/auth/reset-password": {
+        "/api/v1/customers/auth/reset-password": {
             "post": {
                 "tags": [
                     "Customers Authentication"
                 ],
                 "summary": "Customer reset password",
                 "description": "Customer reset password",
-                "operationId": "5ccb4df80981643e93b66d4e78e93c15",
+                "operationId": "0bfd1c22baee5464ef47ab975400aa7d",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -932,14 +932,14 @@
                 }
             }
         },
-        "/api/customers/auth/activate-account": {
+        "/api/v1/customers/auth/activate-account": {
             "post": {
                 "tags": [
                     "Customers Authentication"
                 ],
                 "summary": "Customer activate account",
                 "description": "Customer activate account",
-                "operationId": "5ea1c54ac0e3477f19fecce34d8f941e",
+                "operationId": "fe9994bbd3b6660082c4c6e3b77bffbc",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1125,14 +1125,14 @@
                 }
             }
         },
-        "/api/customers/profile": {
+        "/api/v1/customers/profile": {
             "get": {
                 "tags": [
                     "Customers"
                 ],
                 "summary": "Get customer profile",
                 "description": "Get customer profile",
-                "operationId": "d3c979277b503b4cc2c14ee9d13d47c6",
+                "operationId": "3cf1ee4da67bdcadc9c4b86cfdb0427a",
                 "responses": {
                     "200": {
                         "description": "Customer profile fetched successfully",
@@ -1233,14 +1233,14 @@
                 ]
             }
         },
-        "/api/customers/auth/social-register": {
+        "/api/v1/customers/auth/social-register": {
             "post": {
                 "tags": [
                     "Customers Social Authentication"
                 ],
                 "summary": "Customer social register",
                 "description": "Customer social register",
-                "operationId": "35e81d6867f506640cb0a57a1534256b",
+                "operationId": "9c9e332f220e35287ae1c21c4190f3fb",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1398,14 +1398,14 @@
                 }
             }
         },
-        "/api/customers/auth/social-login": {
+        "/api/v1/customers/auth/social-login": {
             "post": {
                 "tags": [
                     "Customers Social Authentication"
                 ],
                 "summary": "Customer social login",
                 "description": "Customer social login",
-                "operationId": "d5d53b53af4d27577cb34a723d6d6c98",
+                "operationId": "4edc83b99f25c1e0c9d50990ddcec15e",
                 "requestBody": {
                     "required": true,
                     "content": {

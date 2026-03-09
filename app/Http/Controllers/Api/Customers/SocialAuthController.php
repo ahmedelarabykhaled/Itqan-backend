@@ -15,7 +15,7 @@ class SocialAuthController extends Controller
     // social register
     /**
      * @OA\Post(
-     *      path="/api/customers/auth/social-register",
+     *      path="/api/v1/customers/auth/social-register",
      *      tags={"Customers Social Authentication"},
      *      summary="Customer social register",
      *      description="Customer social register",
@@ -96,7 +96,7 @@ class SocialAuthController extends Controller
     // social login
     /**
      * @OA\Post(
-     *      path="/api/customers/auth/social-login",
+     *      path="/api/v1/customers/auth/social-login",
      *      tags={"Customers Social Authentication"},
      *      summary="Customer social login",
      *      description="Customer social login",

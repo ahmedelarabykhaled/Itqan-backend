@@ -19,12 +19,16 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
-        $this->app['router']->prefix('api/customers/auth')->group(
-            base_path('routes/api/customers/auth.php')
-        );
-        $this->app['router']->prefix('api/customers')->group(
-            base_path('routes/api/customers/customers.php')
-        );
+        $this->app['router']->prefix('api/v1')->group(function () {
+
+            $this->app['router']->prefix('customers')->group(function () {
+                $this->app['router']->prefix('auth')->group(
+                    base_path('routes/api/customers/auth.php')
+                );
+                $this->app['router']->prefix('')->group(
+                    base_path('routes/api/customers/customers.php')
+                );
+            });
+        });
     }
 }

@@ -11,7 +11,7 @@ class CustomersController extends Controller
     // get customer profile
     /**
      * @OA\Get(
-     *      path="/api/customers/profile",
+     *      path="/api/v1/customers/profile",
      *      tags={"Customers"},
      *      summary="Get customer profile",
      *      description="Get customer profile",

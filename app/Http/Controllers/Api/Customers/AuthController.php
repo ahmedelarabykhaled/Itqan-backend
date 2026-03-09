@@ -24,7 +24,7 @@ class AuthController extends Controller
     // register
     /**
      * @OA\Post(
-     *      path="/api/customers/auth/register",
+     *      path="/api/v1/customers/auth/register",
      *      tags={"Customers Authentication"},
      *      summary="Customer register",
      *      description="Customer register",
@@ -101,7 +101,7 @@ class AuthController extends Controller
 
     /**
      * @OA\Post(
-     *      path="/api/customers/auth/login",
+     *      path="/api/v1/customers/auth/login",
      *      tags={"Customers Authentication"},
      *      summary="Customer login",
      *      description="Customer login",
@@ -214,7 +214,7 @@ class AuthController extends Controller
     // logout
     /**
      * @OA\Post(
-     *      path="/api/customers/auth/logout",
+     *      path="/api/v1/customers/auth/logout",
      *      tags={"Customers Authentication"},
      *      summary="Customer logout",
      *      description="Customer logout",
@@ -248,7 +248,7 @@ class AuthController extends Controller
     // update customer
     /**
      * @OA\Put(
-     *      path="/api/customers/auth/update",
+     *      path="/api/v1/customers/auth/update",
      *      tags={"Customers Authentication"},
      *      summary="Customer update",
      *      description="Customer update",
@@ -375,7 +375,7 @@ class AuthController extends Controller
     // forgot password
     /**
      * @OA\Post(
-     *      path="/api/customers/auth/forgot-password",
+     *      path="/api/v1/customers/auth/forgot-password",
      *      tags={"Customers Authentication"},
      *      summary="Customer forgot password",
      *      description="Customer forgot password",
@@ -477,7 +477,7 @@ class AuthController extends Controller
     // reset password
     /**
      * @OA\Post(
-     *      path="/api/customers/auth/reset-password",
+     *      path="/api/v1/customers/auth/reset-password",
      *      tags={"Customers Authentication"},
      *      summary="Customer reset password",
      *      description="Customer reset password",
@@ -624,7 +624,7 @@ class AuthController extends Controller
     // activate account
     /**
      * @OA\Post(
-     *      path="/api/customers/auth/activate-account",
+     *      path="/api/v1/customers/auth/activate-account",
      *      tags={"Customers Authentication"},
      *      summary="Customer activate account",
      *      description="Customer activate account",
