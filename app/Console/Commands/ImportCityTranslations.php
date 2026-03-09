@@ -16,25 +16,28 @@ class ImportCityTranslations extends Command
     {
         DB::table('cities')
             ->whereNotNull('wikiDataId')
-            ->orderBy('id')
+            ->where('wikiDataId', 'like', 'Q%')
+            ->orderBy('id', 'desc')
             ->chunk(500, function ($cities) {
 
                 $groups = $cities->chunk(50);
 
-                $responses = Http::pool(function ($pool) use ($groups) {
+                $responses = [];
 
-                    $requests = [];
+                foreach ($groups as $group) {
 
-                    foreach ($groups as $group) {
+                    $ids = $group->pluck('wikiDataId')
+                        ->map(fn ($id) => basename($id))
+                        ->implode('|');
 
-                        $ids = $group->pluck('wikiDataId')
-                            ->map(fn ($id) => basename($id))
-                            ->implode('|');
-
-                        $requests[] = $pool->withHeaders([
+                    try {
+                        $response = Http::withHeaders([
                             'User-Agent' => 'ItqanCitiesImporter/1.0',
                         ])
-                            ->timeout(30)
+                            ->retry(3, 2000, function (\Exception $exception, $request) {
+                                return $exception instanceof \Illuminate\Http\Client\ConnectionException;
+                            })
+                            ->timeout(60)
                             ->get('https://www.wikidata.org/w/api.php', [
                                 'action' => 'wbgetentities',
                                 'ids' => $ids,
@@ -42,20 +45,33 @@ class ImportCityTranslations extends Command
                                 'languages' => 'en|ar|fa|ur|ps|ckb|sd|ug',
                                 'format' => 'json',
                             ]);
+                        
+                        $responses[] = $response;
+                        $this->info('Batch fetched: '.$group->count());
+                        $this->info(json_encode($group->pluck('wikiDataId')));
+                    } catch (\Exception $e) {
+                        $this->error('Failed to fetch batch: ' . $e->getMessage());
                     }
 
-                    return $requests;
-                });
+                    // Sleep for 1 second between requests to respect Wikidata rate limits
+                    sleep(1);
+                }
 
                 $rows = [];
 
-                foreach ($responses as $response) {
+                foreach ($responses as $index => $response) {
 
                     if (! $response->ok()) {
+                        $this->error("HTTP Error: " . $response->status());
                         continue;
                     }
 
                     $data = $response->json();
+
+                    if (isset($data['error'])) {
+                        $this->error("API Error: " . json_encode($data['error']));
+                        continue;
+                    }
 
                     if (! isset($data['entities'])) {
                         continue;
@@ -63,8 +79,8 @@ class ImportCityTranslations extends Command
 
                     foreach ($data['entities'] as $qid => $entity) {
 
-                        $city = $cities->firstWhere('wikiDataId', $qid);
-                        if (! $city) {
+                        $matchingCities = $cities->where('wikiDataId', $qid);
+                        if ($matchingCities->isEmpty()) {
                             continue;
                         }
 
@@ -82,26 +98,27 @@ class ImportCityTranslations extends Command
                             $labels['ug']['value'] ??
                             null;
 
-                        if ($nameEn) {
-                            $rows[] = [
-                                'city_id' => $city->id,
-                                'language_code' => 'en',
-                                'name' => $nameEn,
-                            ];
-                        }
+                        foreach ($matchingCities as $city) {
+                            if ($nameEn) {
+                                $rows[] = [
+                                    'city_id' => $city->id,
+                                    'language_code' => 'en',
+                                    'name' => $nameEn,
+                                ];
+                            }
 
-                        if ($nameAr) {
-                            $rows[] = [
-                                'city_id' => $city->id,
-                                'language_code' => 'ar',
-                                'name' => $nameAr,
-                            ];
+                            if ($nameAr) {
+                                $rows[] = [
+                                    'city_id' => $city->id,
+                                    'language_code' => 'ar',
+                                    'name' => $nameAr,
+                                ];
+                            }
                         }
                     }
                 }
 
                 if ($rows) {
-
                     DB::table('city_translations')->upsert(
                         $rows,
                         ['city_id', 'language_code'],

@@ -29,6 +29,10 @@ class RouteServiceProvider extends ServiceProvider
                     base_path('routes/api/customers/customers.php')
                 );
             });
+
+            $this->app['router']->prefix('locations')->group(
+                base_path('routes/api/locations.php')
+            );
         });
     }
 }
