@@ -15,6 +15,11 @@ class ImportCityTranslations extends Command
     public function handle()
     {
         DB::table('cities')
+            ->whereNotExists(function ($query) {
+                $query->select(DB::raw(1))
+                    ->from('city_translations')
+                    ->whereColumn('city_translations.city_id', 'cities.id');
+            })
             ->whereNotNull('wikiDataId')
             ->where('wikiDataId', 'like', 'Q%')
             ->orderBy('id', 'desc')
@@ -45,12 +50,12 @@ class ImportCityTranslations extends Command
                                 'languages' => 'en|ar|fa|ur|ps|ckb|sd|ug',
                                 'format' => 'json',
                             ]);
-                        
+
                         $responses[] = $response;
                         $this->info('Batch fetched: '.$group->count());
                         $this->info(json_encode($group->pluck('wikiDataId')));
                     } catch (\Exception $e) {
-                        $this->error('Failed to fetch batch: ' . $e->getMessage());
+                        $this->error('Failed to fetch batch: '.$e->getMessage());
                     }
 
                     // Sleep for 1 second between requests to respect Wikidata rate limits
@@ -62,14 +67,16 @@ class ImportCityTranslations extends Command
                 foreach ($responses as $index => $response) {
 
                     if (! $response->ok()) {
-                        $this->error("HTTP Error: " . $response->status());
+                        $this->error('HTTP Error: '.$response->status());
+
                         continue;
                     }
 
                     $data = $response->json();
 
                     if (isset($data['error'])) {
-                        $this->error("API Error: " . json_encode($data['error']));
+                        $this->error('API Error: '.json_encode($data['error']));
+
                         continue;
                     }
 
@@ -119,7 +126,7 @@ class ImportCityTranslations extends Command
                 }
 
                 if ($rows) {
-                    DB::table('city_translations')->upsert(
+                    DB::table('city_translations')->upsert( 
                         $rows,
                         ['city_id', 'language_code'],
                         ['name']

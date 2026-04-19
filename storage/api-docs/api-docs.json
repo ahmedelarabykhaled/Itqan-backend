@@ -1606,6 +1606,22 @@
                                                     "name": {
                                                         "type": "string",
                                                         "example": "Egypt"
+                                                    },
+                                                    "translations": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "language_code": {
+                                                                    "type": "string",
+                                                                    "example": "en"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string",
+                                                                    "example": "Egypt"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
                                                     }
                                                 },
                                                 "type": "object"
@@ -1704,6 +1720,22 @@
                                                     "name": {
                                                         "type": "string",
                                                         "example": "Cairo"
+                                                    },
+                                                    "translations": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "language_code": {
+                                                                    "type": "string",
+                                                                    "example": "en"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string",
+                                                                    "example": "Cairo"
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
                                                     }
                                                 },
                                                 "type": "object"

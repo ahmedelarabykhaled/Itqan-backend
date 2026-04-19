@@ -29,6 +29,12 @@ class LocationController extends Controller
      *                  @OA\Items(type="object",
      *                      @OA\Property(property="id", type="integer", example=1),
      *                      @OA\Property(property="name", type="string", example="Egypt"),
+     *                      @OA\Property(property="translations", type="array",
+     *                          @OA\Items(type="object",
+     *                              @OA\Property(property="language_code", type="string", example="en"),
+     *                              @OA\Property(property="name", type="string", example="Egypt"),
+     *                          )
+     *                      )
      *                  )
      *              ),
      *              @OA\Property(property="errors", type="null", example=null)
@@ -73,7 +79,7 @@ class LocationController extends Controller
      *              @OA\Property(property="success", type="boolean", example=true),
      *              @OA\Property(property="status", type="integer", example=200),
      *              @OA\Property(property="message", type="string", example="Cities fetched successfully"),
-     *              @OA\Property(property="data", type="array", @OA\Items(type="object", @OA\Property(property="id", type="integer", example=1), @OA\Property(property="name", type="string", example="Cairo"))),
+     *              @OA\Property(property="data", type="array", @OA\Items(type="object", @OA\Property(property="id", type="integer", example=1), @OA\Property(property="name", type="string", example="Cairo" ), @OA\Property(property="translations", type="array", @OA\Items(type="object", @OA\Property(property="language_code", type="string", example="en"), @OA\Property(property="name", type="string", example="Cairo"))))),
      *              @OA\Property(property="errors", type="null", example=null)
      *          )
      *      ),
