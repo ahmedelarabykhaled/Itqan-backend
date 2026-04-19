@@ -21,7 +21,7 @@ class SocialLoginRequest extends BaseFormRequest
     {
         return [
             'email' => 'required|email',
-            'provider' => 'required|string|in:google,facebook,twitter',
+            'provider' => 'required|string|in:google,apple',
             'provider_id' => 'required|string',
         ];
     }

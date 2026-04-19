@@ -24,7 +24,7 @@ class SocialRegisterRequest extends BaseFormRequest
             'email' => 'required|email|unique:customers,email',
             'gender' => 'required|string|in:male,female',
             'avatar' => 'nullable|string',
-            'provider' => 'required|string|in:google,facebook,twitter',
+            'provider' => 'required|string|in:google,apple',
             'provider_id' => 'required|string',
         ];
     }
