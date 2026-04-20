@@ -1233,6 +1233,296 @@
                 ]
             }
         },
+        "/api/v1/customers/memorized": {
+            "get": {
+                "tags": [
+                    "Memorized Ayahs"
+                ],
+                "summary": "Get all memorized ayahs",
+                "operationId": "d0d6aa487c6fd5d081dad3cb9e88eb66",
+                "responses": {
+                    "200": {
+                        "description": "Memorized ayahs fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Memorized ayahs fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "surah_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "ayah_number": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "errors": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Memorized Ayahs"
+                ],
+                "summary": "Mark ayah as memorized",
+                "operationId": "fa5504a9e0ac66c16f3e53fe9067a2ec",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "surah_id",
+                                    "ayah_number"
+                                ],
+                                "properties": {
+                                    "surah_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "ayah_number": {
+                                        "type": "integer",
+                                        "example": 255
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ayah memorized successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ayah memorized successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "surah_id": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "ayah_number": {
+                                                    "type": "integer",
+                                                    "example": 255
+                                                },
+                                                "memorized_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-04-20T10:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/customers/memorized/last": {
+            "get": {
+                "tags": [
+                    "Memorized Ayahs"
+                ],
+                "summary": "Get last memorized ayah",
+                "operationId": "1ed2faea976cb9e0064250f419891f8a",
+                "responses": {
+                    "200": {
+                        "description": "Last memorized ayah fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Last memorized ayah fetched successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "surah_id": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "ayah_number": {
+                                                    "type": "integer",
+                                                    "example": 255
+                                                },
+                                                "memorized_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-04-20T10:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "errors": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/customers/memorized/summary": {
+            "get": {
+                "tags": [
+                    "Memorized Ayahs"
+                ],
+                "summary": "Get memorized ayahs summary by surah",
+                "operationId": "b027866f4c820272d87e76fea3032507",
+                "responses": {
+                    "200": {
+                        "description": "Memorized summary fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Memorized summary fetched successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "surah_id": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "memorized_count": {
+                                                        "type": "integer",
+                                                        "example": 40
+                                                    },
+                                                    "total_ayahs": {
+                                                        "type": "integer",
+                                                        "example": 286
+                                                    },
+                                                    "memorized_percentage": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 13.99
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "errors": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/v1/customers/auth/social-register": {
             "post": {
                 "tags": [
@@ -1914,6 +2204,10 @@
         {
             "name": "Customers",
             "description": "Customers"
+        },
+        {
+            "name": "Memorized Ayahs",
+            "description": "Memorized Ayahs"
         },
         {
             "name": "Customers Social Authentication",

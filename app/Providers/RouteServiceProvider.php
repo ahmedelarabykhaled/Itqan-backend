@@ -28,6 +28,9 @@ class RouteServiceProvider extends ServiceProvider
                 $this->app['router']->prefix('')->group(
                     base_path('routes/api/customers/customers.php')
                 );
+                $this->app['router']->prefix('')->group(
+                    base_path('routes/api/customers/memorized.php')
+                );
             });
 
             $this->app['router']->prefix('locations')->group(
