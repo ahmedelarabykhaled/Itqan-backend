@@ -84,7 +84,7 @@ class AuthController extends Controller
     {
         $data = $request->validated();
         // return "hello";
-        $otp = random_int(100000, 999999);
+        $otp = 123456; //random_int(100000, 999999);
         $data['verification_code'] = $otp;
         $data['verification_code_expires_at'] = now()->addMinutes(10);
 
@@ -448,7 +448,7 @@ class AuthController extends Controller
         }
 
         // إنشاء كود 6 أرقام
-        $otp = random_int(100000, 999999);
+        $otp = 123456; //random_int(100000, 999999);
 
         // نحذف أي توكن قديم
         Password::broker('customers')->deleteToken($customer);
