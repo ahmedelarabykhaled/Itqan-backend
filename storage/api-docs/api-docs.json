@@ -1410,6 +1410,85 @@
                         "sanctum": []
                     }
                 ]
+            },
+            "delete": {
+                "tags": [
+                    "Customers"
+                ],
+                "summary": "Delete customer account",
+                "description": "Permanently delete the authenticated customer account and all related data",
+                "operationId": "1601be65f8dad2089319137817091b29",
+                "responses": {
+                    "200": {
+                        "description": "Customer account deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Customer account deleted successfully."
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        },
+                                        "errors": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 401
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        },
+                                        "errors": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/v1/customers/memorized": {

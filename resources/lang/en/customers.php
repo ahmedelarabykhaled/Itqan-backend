@@ -7,6 +7,7 @@ return [
     'customer_already_verified' => 'Customer account is already verified.',
     'customer_logged_in_successfully' => 'Customer logged in successfully.',
     'customer_registered_successfully' => 'Customer registered successfully.',
+    'customer_deleted_successfully' => 'Customer account deleted successfully.',
     'otp_resent_successfully' => 'Verification code resent successfully.',
     'invalid_code' => 'Invalid code.',
     'code_expired' => 'Code expired.',
