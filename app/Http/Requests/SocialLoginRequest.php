@@ -22,7 +22,7 @@ class SocialLoginRequest extends BaseFormRequest
         return [
             'email' => 'required|email',
             'provider' => 'required|string|in:google,apple',
-            'provider_id' => 'required|string',
+            'provider_id' => 'required|string|min:8',
         ];
     }
 
@@ -35,6 +35,7 @@ class SocialLoginRequest extends BaseFormRequest
             'provider.in' => __('customers.provider_in'),
             'provider_id.required' => __('customers.provider_id_required'),
             'provider_id.string' => __('customers.provider_id_string'),
+            'provider_id.min' => __('customers.provider_id_min'),
         ];
     }
 }

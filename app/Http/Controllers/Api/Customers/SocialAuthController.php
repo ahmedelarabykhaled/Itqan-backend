@@ -6,17 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\SocialLoginRequest;
 use App\Http\Requests\SocialRegisterRequest;
 use App\Http\Responses\ApiResponse;
-use App\Http\Services\SocialTokenVerifier;
 use App\Models\Customer;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class SocialAuthController extends Controller
 {
-    public function __construct(
-        private SocialTokenVerifier $tokenVerifier
-    ) {}
-
     // social register
     /**
      * @OA\Post(
@@ -35,7 +30,7 @@ class SocialAuthController extends Controller
      *              @OA\Property(property="gender", type="string", enum={"male", "female"}, example="male"),
      *              @OA\Property(property="avatar", type="string", example="avatar.jpg"),
      *              @OA\Property(property="provider", type="string", enum={"google", "apple"}, example="google"),
-     *              @OA\Property(property="provider_id", type="string", example="eyJhbGciOiJSUzI1NiIs..."),
+     *              @OA\Property(property="provider_id", type="string", example="12345678"),
      *          )
      *      ),
      *
@@ -55,24 +50,10 @@ class SocialAuthController extends Controller
      *                  @OA\Property(property="gender", type="string", enum={"male", "female"}, example="male"),
      *                  @OA\Property(property="avatar", type="string", nullable=true, example="https://example.com/avatar.jpg"),
      *                  @OA\Property(property="provider", type="string", example="google"),
-     *                  @OA\Property(property="provider_id", type="string", example="123456"),
+     *                  @OA\Property(property="provider_id", type="string", example="12345678"),
      *                  @OA\Property(property="email_verified_at", type="string", format="date-time", example="2026-02-20T10:00:00.000000Z")
      *              ),
      *              @OA\Property(property="errors", type="null", example=null)
-     *          )
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=401,
-     *          description="Invalid social token or email mismatch",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="success", type="boolean", example=false),
-     *              @OA\Property(property="status", type="integer", example=401),
-     *              @OA\Property(property="message", type="string", example="The social authentication token is invalid or expired."),
-     *              @OA\Property(property="data", type="null", example=null),
-     *              @OA\Property(property="errors", type="array", @OA\Items(type="string", example="The social authentication token is invalid or expired."))
      *          )
      *      ),
      *
@@ -95,24 +76,6 @@ class SocialAuthController extends Controller
     {
         $data = $request->validated();
 
-        $tokenPayload = $this->tokenVerifier->verify($data['provider'], $data['provider_id']);
-
-        if (! $tokenPayload) {
-            return ApiResponse::error(
-                message: __('customers.social_token_invalid'),
-                errors: [__('customers.social_token_invalid')],
-                status: 401
-            );
-        }
-
-        if (! $tokenPayload['email'] || strtolower($tokenPayload['email']) !== strtolower($data['email'])) {
-            return ApiResponse::error(
-                message: __('customers.social_email_mismatch'),
-                errors: [__('customers.social_email_mismatch')],
-                status: 401
-            );
-        }
-
         $customer = Customer::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -120,7 +83,7 @@ class SocialAuthController extends Controller
             'gender' => $data['gender'] ?? null,
             'avatar' => $data['avatar'] ?? null,
             'provider' => $data['provider'],
-            'provider_id' => $tokenPayload['sub'],
+            'provider_id' => $data['provider_id'],
             'email_verified_at' => now(),
         ]);
 
@@ -146,7 +109,7 @@ class SocialAuthController extends Controller
      *
      *              @OA\Property(property="email", type="string", format="email", example="john@example.com"),
      *              @OA\Property(property="provider", type="string", enum={"google", "apple"}, example="google"),
-     *              @OA\Property(property="provider_id", type="string", example="eyJhbGciOiJSUzI1NiIs..."),
+     *              @OA\Property(property="provider_id", type="string", example="12345678"),
      *          )
      *      ),
      *
@@ -164,24 +127,10 @@ class SocialAuthController extends Controller
      *                  @OA\Property(property="name", type="string", example="John Doe"),
      *                  @OA\Property(property="email", type="string", format="email", example="john@example.com"),
      *                  @OA\Property(property="provider", type="string", example="google"),
-     *                  @OA\Property(property="provider_id", type="string", example="123456"),
+     *                  @OA\Property(property="provider_id", type="string", example="12345678"),
      *                  @OA\Property(property="token", type="string", example="1|xYzAbCdEf123")
      *              ),
      *              @OA\Property(property="errors", type="null", example=null)
-     *          )
-     *      ),
-     *
-     *      @OA\Response(
-     *          response=401,
-     *          description="Invalid social token or email mismatch",
-     *
-     *          @OA\JsonContent(
-     *
-     *              @OA\Property(property="success", type="boolean", example=false),
-     *              @OA\Property(property="status", type="integer", example=401),
-     *              @OA\Property(property="message", type="string", example="The social authentication token is invalid or expired."),
-     *              @OA\Property(property="data", type="null", example=null),
-     *              @OA\Property(property="errors", type="array", @OA\Items(type="string", example="The social authentication token is invalid or expired."))
      *          )
      *      ),
      *
@@ -218,26 +167,8 @@ class SocialAuthController extends Controller
     {
         $data = $request->validated();
 
-        $tokenPayload = $this->tokenVerifier->verify($data['provider'], $data['provider_id']);
-
-        if (! $tokenPayload) {
-            return ApiResponse::error(
-                message: __('customers.social_token_invalid'),
-                errors: [__('customers.social_token_invalid')],
-                status: 401
-            );
-        }
-
-        if (! $tokenPayload['email'] || strtolower($tokenPayload['email']) !== strtolower($data['email'])) {
-            return ApiResponse::error(
-                message: __('customers.social_email_mismatch'),
-                errors: [__('customers.social_email_mismatch')],
-                status: 401
-            );
-        }
-
         $customer = Customer::where('provider', $data['provider'])
-            ->where('provider_id', $tokenPayload['sub'])
+            ->where('provider_id', $data['provider_id'])
             ->where('email', $data['email'])
             ->first();
 

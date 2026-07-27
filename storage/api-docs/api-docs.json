@@ -1826,7 +1826,7 @@
                                     },
                                     "provider_id": {
                                         "type": "string",
-                                        "example": "eyJhbGciOiJSUzI1NiIs..."
+                                        "example": "12345678"
                                     }
                                 },
                                 "type": "object"
@@ -1887,7 +1887,7 @@
                                                 },
                                                 "provider_id": {
                                                     "type": "string",
-                                                    "example": "123456"
+                                                    "example": "12345678"
                                                 },
                                                 "email_verified_at": {
                                                     "type": "string",
@@ -1900,41 +1900,6 @@
                                         "errors": {
                                             "type": "null",
                                             "example": null
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid social token or email mismatch",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "status": {
-                                            "type": "integer",
-                                            "example": 401
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "The social authentication token is invalid or expired."
-                                        },
-                                        "data": {
-                                            "type": "null",
-                                            "example": null
-                                        },
-                                        "errors": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string",
-                                                "example": "The social authentication token is invalid or expired."
-                                            }
                                         }
                                     },
                                     "type": "object"
@@ -2009,7 +1974,7 @@
                                     },
                                     "provider_id": {
                                         "type": "string",
-                                        "example": "eyJhbGciOiJSUzI1NiIs..."
+                                        "example": "12345678"
                                     }
                                 },
                                 "type": "object"
@@ -2057,7 +2022,7 @@
                                                 },
                                                 "provider_id": {
                                                     "type": "string",
-                                                    "example": "123456"
+                                                    "example": "12345678"
                                                 },
                                                 "token": {
                                                     "type": "string",
@@ -2069,41 +2034,6 @@
                                         "errors": {
                                             "type": "null",
                                             "example": null
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Invalid social token or email mismatch",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean",
-                                            "example": false
-                                        },
-                                        "status": {
-                                            "type": "integer",
-                                            "example": 401
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "example": "The social authentication token is invalid or expired."
-                                        },
-                                        "data": {
-                                            "type": "null",
-                                            "example": null
-                                        },
-                                        "errors": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string",
-                                                "example": "The social authentication token is invalid or expired."
-                                            }
                                         }
                                     },
                                     "type": "object"

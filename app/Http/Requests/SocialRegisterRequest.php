@@ -25,7 +25,7 @@ class SocialRegisterRequest extends BaseFormRequest
             'gender' => 'required|string|in:male,female',
             'avatar' => 'nullable|string',
             'provider' => 'required|string|in:google,apple',
-            'provider_id' => 'required|string',
+            'provider_id' => 'required|string|min:8|unique:customers,provider_id',
         ];
     }
 
@@ -44,6 +44,8 @@ class SocialRegisterRequest extends BaseFormRequest
             'provider.in' => __('customers.provider_in'),
             'provider_id.required' => __('customers.provider_id_required'),
             'provider_id.string' => __('customers.provider_id_string'),
+            'provider_id.min' => __('customers.provider_id_min'),
+            'provider_id.unique' => __('customers.provider_id_unique'),
         ];
     }
 }

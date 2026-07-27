@@ -44,12 +44,10 @@ return [
     'provider_in' => 'The selected provider is invalid.',
     'provider_id_required' => 'The provider ID field is required.',
     'provider_id_string' => 'The provider ID must be a string.',
+    'provider_id_min' => 'The provider ID must be at least 8 characters.',
+    'provider_id_unique' => 'The provider ID has already been taken.',
 
     // Token validation
     'token_required' => 'The token field is required.',
     'token_string' => 'The token must be a string.',
-
-    // Social token verification
-    'social_token_invalid' => 'The social authentication token is invalid or expired.',
-    'social_email_mismatch' => 'The email from the social provider does not match the provided email.',
 ];
