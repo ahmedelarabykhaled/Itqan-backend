@@ -4,8 +4,14 @@ return [
     // Authentication messages
     'customer_not_found' => 'Customer not found.',
     'customer_not_verified' => 'Customer account is not verified.',
+    'customer_already_verified' => 'Customer account is already verified.',
     'customer_logged_in_successfully' => 'Customer logged in successfully.',
     'customer_registered_successfully' => 'Customer registered successfully.',
+    'otp_resent_successfully' => 'Verification code resent successfully.',
+    'invalid_code' => 'Invalid code.',
+    'code_expired' => 'Code expired.',
+    'invalid_token' => 'Invalid token.',
+    'token_expired' => 'Token expired.',
 
     // Name validation
     'name_required' => 'The name field is required.',

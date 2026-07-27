@@ -8,6 +8,7 @@ use App\Http\Requests\CustomerLoginRequest;
 use App\Http\Requests\CustomerRegisterRequest;
 use App\Http\Requests\CustomerUpdateRequest;
 use App\Http\Requests\ForgotPasswordRequest;
+use App\Http\Requests\ResendActivationOtpRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\Customer;
@@ -84,7 +85,7 @@ class AuthController extends Controller
     {
         $data = $request->validated();
         // return "hello";
-        $otp = 123456; //random_int(100000, 999999);
+        $otp = 123456; // random_int(100000, 999999);
         $data['verification_code'] = $otp;
         $data['verification_code_expires_at'] = now()->addMinutes(10);
 
@@ -448,7 +449,7 @@ class AuthController extends Controller
         }
 
         // إنشاء كود 6 أرقام
-        $otp = 123456; //random_int(100000, 999999);
+        $otp = 123456; // random_int(100000, 999999);
 
         // نحذف أي توكن قديم
         Password::broker('customers')->deleteToken($customer);
@@ -653,7 +654,8 @@ class AuthController extends Controller
      *                  @OA\Property(property="email", type="string", format="email", example="john@example.com"),
      *                  @OA\Property(property="email_verified_at", type="string", format="date-time", example="2026-02-20T10:00:00.000000Z"),
      *                  @OA\Property(property="verification_code", type="null", example=null),
-     *                  @OA\Property(property="verification_code_expires_at", type="null", example=null)
+     *                  @OA\Property(property="verification_code_expires_at", type="null", example=null),
+     *                  @OA\Property(property="token", type="string", example="1|xYzAbCdEf123")
      *              ),
      *              @OA\Property(property="errors", type="null", example=null)
      *          )
@@ -740,9 +742,127 @@ class AuthController extends Controller
         $customer->verification_code_expires_at = null;
         $customer->save();
 
+        $token = $customer->createToken('auth-token')->plainTextToken;
+        $customer->token = $token;
+
         return ApiResponse::success(
             message: 'Account activated successfully',
             data: $customer,
+            status: 200
+        );
+    }
+
+    /**
+     * @OA\Post(
+     *      path="/api/v1/customers/auth/resend-activation-otp",
+     *      tags={"Customers Authentication"},
+     *      summary="Resend customer activation OTP",
+     *      description="Resend customer activation OTP",
+     *
+     *      @OA\RequestBody(
+     *          required=true,
+     *
+     *          @OA\JsonContent(
+     *              required={"email"},
+     *
+     *              @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="Verification code resent successfully",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="success", type="boolean", example=true),
+     *              @OA\Property(property="status", type="integer", example=200),
+     *              @OA\Property(property="message", type="string", example="Verification code resent successfully."),
+     *              @OA\Property(property="data", type="object",
+     *                  @OA\Property(property="email", type="string", format="email", example="john@example.com")
+     *              ),
+     *              @OA\Property(property="errors", type="null", example=null)
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=400,
+     *          description="Customer account is already verified",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="success", type="boolean", example=false),
+     *              @OA\Property(property="status", type="integer", example=400),
+     *              @OA\Property(property="message", type="string", example="Customer account is already verified."),
+     *              @OA\Property(property="data", type="null", example=null),
+     *              @OA\Property(property="errors", type="array", @OA\Items(type="string", example="Customer account is already verified."))
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=404,
+     *          description="Customer not found",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="success", type="boolean", example=false),
+     *              @OA\Property(property="status", type="integer", example=404),
+     *              @OA\Property(property="message", type="string", example="Customer not found"),
+     *              @OA\Property(property="data", type="null", example=null),
+     *              @OA\Property(property="errors", type="array", @OA\Items(type="string", example="Customer not found"))
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validation error",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="success", type="boolean", example=false),
+     *              @OA\Property(property="status", type="integer", example=422),
+     *              @OA\Property(property="message", type="string", example="Validation Error"),
+     *              @OA\Property(property="data", type="null", example=null),
+     *              @OA\Property(property="errors", type="array", @OA\Items(type="string", example="The email field is required."))
+     *          )
+     *      )
+     * )
+     */
+    public function resendActivationOtp(ResendActivationOtpRequest $request)
+    {
+        $customer = Customer::where('email', $request->email)->first();
+        if (! $customer) {
+            return ApiResponse::error(
+                message: __('customers.customer_not_found'),
+                errors: [
+                    __('customers.customer_not_found'),
+                ],
+                status: 404
+            );
+        }
+
+        if ($customer->email_verified_at) {
+            return ApiResponse::error(
+                message: __('customers.customer_already_verified'),
+                errors: [
+                    __('customers.customer_already_verified'),
+                ],
+                status: 400
+            );
+        }
+
+        $otp = 123456; // random_int(100000, 999999);
+        $customer->verification_code = $otp;
+        $customer->verification_code_expires_at = now()->addMinutes(10);
+        $customer->save();
+
+        $customer->notify(new ActivateAccountOtpNotification($otp));
+
+        return ApiResponse::success(
+            message: __('customers.otp_resent_successfully'),
+            data: [
+                'email' => $customer->email,
+            ],
             status: 200
         );
     }
