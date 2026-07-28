@@ -1557,7 +1557,7 @@
                 "tags": [
                     "Memorized Ayahs"
                 ],
-                "summary": "Mark ayah as memorized",
+                "summary": "Mark ayahs as memorized (bulk)",
                 "operationId": "fa5504a9e0ac66c16f3e53fe9067a2ec",
                 "requestBody": {
                     "required": true,
@@ -1565,17 +1565,28 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "surah_id",
-                                    "ayah_number"
+                                    "ayahs"
                                 ],
                                 "properties": {
-                                    "surah_id": {
-                                        "type": "integer",
-                                        "example": 2
-                                    },
-                                    "ayah_number": {
-                                        "type": "integer",
-                                        "example": 255
+                                    "ayahs": {
+                                        "type": "array",
+                                        "items": {
+                                            "required": [
+                                                "surah_id",
+                                                "ayah_number"
+                                            ],
+                                            "properties": {
+                                                "surah_id": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                },
+                                                "ayah_number": {
+                                                    "type": "integer",
+                                                    "example": 255
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
                                     }
                                 },
                                 "type": "object"
@@ -1585,7 +1596,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Ayah memorized successfully",
+                        "description": "Ayahs memorized successfully",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1600,25 +1611,28 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Ayah memorized successfully"
+                                            "example": "Ayahs memorized successfully"
                                         },
                                         "data": {
-                                            "properties": {
-                                                "surah_id": {
-                                                    "type": "integer",
-                                                    "example": 2
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "surah_id": {
+                                                        "type": "integer",
+                                                        "example": 2
+                                                    },
+                                                    "ayah_number": {
+                                                        "type": "integer",
+                                                        "example": 255
+                                                    },
+                                                    "memorized_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2026-04-20T10:00:00.000000Z"
+                                                    }
                                                 },
-                                                "ayah_number": {
-                                                    "type": "integer",
-                                                    "example": 255
-                                                },
-                                                "memorized_at": {
-                                                    "type": "string",
-                                                    "format": "date-time",
-                                                    "example": "2026-04-20T10:00:00.000000Z"
-                                                }
-                                            },
-                                            "type": "object"
+                                                "type": "object"
+                                            }
                                         },
                                         "errors": {
                                             "type": "null",

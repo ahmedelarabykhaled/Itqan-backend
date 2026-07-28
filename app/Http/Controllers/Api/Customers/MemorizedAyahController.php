@@ -7,6 +7,7 @@ use App\Http\Responses\ApiResponse;
 use App\Models\UserMemorizedAyah;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class MemorizedAyahController extends Controller
 {
@@ -14,33 +15,47 @@ class MemorizedAyahController extends Controller
      * @OA\Post(
      *     path="/api/v1/customers/memorized",
      *     tags={"Memorized Ayahs"},
-     *     summary="Mark ayah as memorized",
+     *     summary="Mark ayahs as memorized (bulk)",
      *     security={{"sanctum":{}}},
      *
      *     @OA\RequestBody(
      *         required=true,
      *
      *         @OA\JsonContent(
-     *             required={"surah_id","ayah_number"},
+     *             required={"ayahs"},
      *
-     *             @OA\Property(property="surah_id", type="integer", example=2),
-     *             @OA\Property(property="ayah_number", type="integer", example=255)
+     *             @OA\Property(
+     *                 property="ayahs",
+     *                 type="array",
+     *
+     *                 @OA\Items(
+     *                     type="object",
+     *                     required={"surah_id","ayah_number"},
+     *
+     *                     @OA\Property(property="surah_id", type="integer", example=2),
+     *                     @OA\Property(property="ayah_number", type="integer", example=255)
+     *                 )
+     *             )
      *         )
      *     ),
      *
      *     @OA\Response(
      *         response=200,
-     *         description="Ayah memorized successfully",
+     *         description="Ayahs memorized successfully",
      *
      *         @OA\JsonContent(
      *
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="status", type="integer", example=200),
-     *             @OA\Property(property="message", type="string", example="Ayah memorized successfully"),
-     *             @OA\Property(property="data", type="object",
-     *                 @OA\Property(property="surah_id", type="integer", example=2),
-     *                 @OA\Property(property="ayah_number", type="integer", example=255),
-     *                 @OA\Property(property="memorized_at", type="string", format="date-time", example="2026-04-20T10:00:00.000000Z")
+     *             @OA\Property(property="message", type="string", example="Ayahs memorized successfully"),
+     *             @OA\Property(property="data", type="array",
+     *
+     *                 @OA\Items(type="object",
+     *
+     *                     @OA\Property(property="surah_id", type="integer", example=2),
+     *                     @OA\Property(property="ayah_number", type="integer", example=255),
+     *                     @OA\Property(property="memorized_at", type="string", format="date-time", example="2026-04-20T10:00:00.000000Z")
+     *                 )
      *             ),
      *             @OA\Property(property="errors", type="null", example=null)
      *         )
@@ -59,28 +74,43 @@ class MemorizedAyahController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'surah_id' => ['required', 'integer', 'min:1'],
-            'ayah_number' => ['required', 'integer', 'min:1'],
+            'ayahs' => ['required', 'array', 'min:1'],
+            'ayahs.*.surah_id' => ['required', 'integer', 'min:1'],
+            'ayahs.*.ayah_number' => ['required', 'integer', 'min:1'],
         ]);
 
-        $memorizedAyah = UserMemorizedAyah::query()->updateOrCreate(
-            [
-                'user_id' => $request->user()->id,
-                'surah_id' => $validated['surah_id'],
-                'ayah_number' => $validated['ayah_number'],
-            ],
-            [
-                'memorized_at' => now(),
-            ]
+        $userId = $request->user()->id;
+        $memorizedAt = Carbon::now();
+
+        $rows = array_map(fn (array $ayah): array => [
+            'user_id' => $userId,
+            'surah_id' => $ayah['surah_id'],
+            'ayah_number' => $ayah['ayah_number'],
+            'memorized_at' => $memorizedAt,
+        ], $validated['ayahs']);
+
+        UserMemorizedAyah::query()->upsert(
+            $rows,
+            uniqueBy: ['user_id', 'surah_id', 'ayah_number'],
+            update: ['memorized_at'],
         );
 
+        $memorizedAyahs = UserMemorizedAyah::query()
+            ->where('user_id', $userId)
+            ->where(function ($query) use ($validated): void {
+                foreach ($validated['ayahs'] as $ayah) {
+                    $query->orWhere(fn ($q) => $q
+                        ->where('surah_id', $ayah['surah_id'])
+                        ->where('ayah_number', $ayah['ayah_number'])
+                    );
+                }
+            })
+            ->select(['surah_id', 'ayah_number', 'memorized_at'])
+            ->get();
+
         return ApiResponse::success(
-            data: [
-                'surah_id' => $memorizedAyah->surah_id,
-                'ayah_number' => $memorizedAyah->ayah_number,
-                'memorized_at' => $memorizedAyah->memorized_at,
-            ],
-            message: 'Ayah memorized successfully'
+            data: $memorizedAyahs,
+            message: 'Ayahs memorized successfully'
         );
     }
 
