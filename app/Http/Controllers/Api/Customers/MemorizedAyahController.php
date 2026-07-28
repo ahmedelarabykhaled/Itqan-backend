@@ -33,7 +33,8 @@ class MemorizedAyahController extends Controller
      *                     required={"surah_id","ayah_number"},
      *
      *                     @OA\Property(property="surah_id", type="integer", example=2),
-     *                     @OA\Property(property="ayah_number", type="integer", example=255)
+     *                     @OA\Property(property="ayah_number", type="integer", example=255),
+     *                     @OA\Property(property="status", type="string", nullable=true, example="memorized")
      *                 )
      *             )
      *         )
@@ -54,7 +55,8 @@ class MemorizedAyahController extends Controller
      *
      *                     @OA\Property(property="surah_id", type="integer", example=2),
      *                     @OA\Property(property="ayah_number", type="integer", example=255),
-     *                     @OA\Property(property="memorized_at", type="string", format="date-time", example="2026-04-20T10:00:00.000000Z")
+     *                     @OA\Property(property="memorized_at", type="string", format="date-time", example="2026-04-20T10:00:00.000000Z"),
+     *                     @OA\Property(property="status", type="string", nullable=true, example="memorized")
      *                 )
      *             ),
      *             @OA\Property(property="errors", type="null", example=null)
@@ -77,6 +79,7 @@ class MemorizedAyahController extends Controller
             'ayahs' => ['required', 'array', 'min:1'],
             'ayahs.*.surah_id' => ['required', 'integer', 'min:1'],
             'ayahs.*.ayah_number' => ['required', 'integer', 'min:1'],
+            'ayahs.*.status' => ['nullable', 'string'],
         ]);
 
         $userId = $request->user()->id;
@@ -87,12 +90,13 @@ class MemorizedAyahController extends Controller
             'surah_id' => $ayah['surah_id'],
             'ayah_number' => $ayah['ayah_number'],
             'memorized_at' => $memorizedAt,
+            'status' => $ayah['status'] ?? null,
         ], $validated['ayahs']);
 
         UserMemorizedAyah::query()->upsert(
             $rows,
             uniqueBy: ['user_id', 'surah_id', 'ayah_number'],
-            update: ['memorized_at'],
+            update: ['memorized_at', 'status'],
         );
 
         $memorizedAyahs = UserMemorizedAyah::query()
@@ -105,7 +109,7 @@ class MemorizedAyahController extends Controller
                     );
                 }
             })
-            ->select(['surah_id', 'ayah_number', 'memorized_at'])
+            ->select(['surah_id', 'ayah_number', 'memorized_at', 'status'])
             ->get();
 
         return ApiResponse::success(
@@ -121,6 +125,15 @@ class MemorizedAyahController extends Controller
      *     summary="Get all memorized ayahs",
      *     security={{"sanctum":{}}},
      *
+     *     @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         required=false,
+     *         description="Filter by status value",
+     *
+     *         @OA\Schema(type="string", example="memorized")
+     *     ),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Memorized ayahs fetched successfully",
@@ -135,7 +148,8 @@ class MemorizedAyahController extends Controller
      *                 @OA\Items(type="object",
      *
      *                     @OA\Property(property="surah_id", type="integer", example=1),
-     *                     @OA\Property(property="ayah_number", type="integer", example=1)
+     *                     @OA\Property(property="ayah_number", type="integer", example=1),
+     *                     @OA\Property(property="status", type="string", nullable=true, example="memorized")
      *                 )
      *             ),
      *             @OA\Property(property="errors", type="null", example=null)
@@ -150,9 +164,14 @@ class MemorizedAyahController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
+        $request->validate([
+            'status' => ['nullable', 'string'],
+        ]);
+
         $memorizedAyahs = UserMemorizedAyah::query()
             ->where('user_id', $request->user()->id)
-            ->select(['surah_id', 'ayah_number'])
+            ->when($request->filled('status'), fn ($query) => $query->where('status', $request->input('status')))
+            ->select(['surah_id', 'ayah_number', 'status'])
             ->orderBy('surah_id')
             ->orderBy('ayah_number')
             ->get();

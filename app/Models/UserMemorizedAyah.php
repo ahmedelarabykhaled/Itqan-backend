@@ -11,6 +11,7 @@ class UserMemorizedAyah extends Model
         'surah_id',
         'ayah_number',
         'memorized_at',
+        'status',
     ];
 
     /**
