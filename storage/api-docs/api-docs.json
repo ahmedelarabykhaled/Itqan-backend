@@ -1498,6 +1498,18 @@
                 ],
                 "summary": "Get all memorized ayahs",
                 "operationId": "d0d6aa487c6fd5d081dad3cb9e88eb66",
+                "parameters": [
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by status value",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "memorized"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Memorized ayahs fetched successfully",
@@ -1528,6 +1540,11 @@
                                                     "ayah_number": {
                                                         "type": "integer",
                                                         "example": 1
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "memorized",
+                                                        "nullable": true
                                                     }
                                                 },
                                                 "type": "object"
@@ -1583,6 +1600,11 @@
                                                 "ayah_number": {
                                                     "type": "integer",
                                                     "example": 255
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "memorized",
+                                                    "nullable": true
                                                 }
                                             },
                                             "type": "object"
@@ -1629,6 +1651,11 @@
                                                         "type": "string",
                                                         "format": "date-time",
                                                         "example": "2026-04-20T10:00:00.000000Z"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "memorized",
+                                                        "nullable": true
                                                     }
                                                 },
                                                 "type": "object"
