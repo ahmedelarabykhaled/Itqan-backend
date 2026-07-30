@@ -13,7 +13,7 @@ class BaseFormRequest extends FormRequest
     {
         throw new HttpResponseException(
             ApiResponse::error(
-                message: 'Validation Error',
+                message: __('messages.validation_error'),
                 errors: $validator->errors()->all(),
                 status: 422
             )

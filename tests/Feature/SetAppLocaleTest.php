@@ -10,7 +10,8 @@ class SetAppLocaleTest extends TestCase
     {
         $this->withHeader('Accept-Language', 'ar')
             ->postJson('/api/v1/customers/auth/login')
-            ->assertStatus(422);
+            ->assertStatus(422)
+            ->assertJsonFragment(['message' => 'خطأ في البيانات المدخلة']);
 
         $this->assertEquals('ar', app()->getLocale());
     }
@@ -19,7 +20,8 @@ class SetAppLocaleTest extends TestCase
     {
         $this->withHeader('Accept-Language', 'en')
             ->postJson('/api/v1/customers/auth/login')
-            ->assertStatus(422);
+            ->assertStatus(422)
+            ->assertJsonFragment(['message' => 'Validation error']);
 
         $this->assertEquals('en', app()->getLocale());
     }
@@ -27,7 +29,8 @@ class SetAppLocaleTest extends TestCase
     public function test_sets_locale_from_query_parameter(): void
     {
         $this->postJson('/api/v1/customers/auth/login?lang=ar')
-            ->assertStatus(422);
+            ->assertStatus(422)
+            ->assertJsonFragment(['message' => 'خطأ في البيانات المدخلة']);
 
         $this->assertEquals('ar', app()->getLocale());
     }

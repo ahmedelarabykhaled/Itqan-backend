@@ -30,7 +30,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (AuthenticationException $exception, Request $request) {
             if ($request->expectsJson() || $request->is('api/*')) {
                 return ApiResponse::error(
-                    message: $exception->getMessage() ?: 'Unauthenticated.',
+                    message: $exception->getMessage() ? __($exception->getMessage()) : __('messages.unauthenticated'),
                     status: 401
                 );
             }
@@ -42,7 +42,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (ValidationException $e, Request $request) {
             if ($request->is('api/*')) {
                 return ApiResponse::error(
-                    message: 'Validation error',
+                    message: __('messages.validation_error'),
                     errors: $e->errors(),
                     status: 422
                 );
@@ -55,7 +55,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (Exception $e, Request $request) {
             if ($request->is('api/*')) {
                 return ApiResponse::error(
-                    message: 'Server error',
+                    message: __('messages.server_error'),
                     status: 500
                 );
             }
