@@ -31,6 +31,8 @@ class AuthController extends Controller
      *      summary="Customer register",
      *      description="Customer register",
      *
+     *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
+     *
      *      @OA\RequestBody(
      *          required=true,
      *
@@ -107,6 +109,8 @@ class AuthController extends Controller
      *      tags={"Customers Authentication"},
      *      summary="Customer login",
      *      description="Customer login",
+     *
+     *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
      *
      *      @OA\RequestBody(
      *          required=true,
@@ -222,6 +226,8 @@ class AuthController extends Controller
      *      description="Customer logout",
      *      security={{"sanctum":{}}},
      *
+     *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="Customer logged out successfully",
@@ -255,6 +261,8 @@ class AuthController extends Controller
      *      summary="Customer update",
      *      description="Customer update",
      *      security={{"sanctum":{}}},
+     *
+     *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
      *
      *      @OA\RequestBody(
      *          required=true,
@@ -382,6 +390,8 @@ class AuthController extends Controller
      *      summary="Customer forgot password",
      *      description="Customer forgot password",
      *
+     *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
+     *
      *      @OA\RequestBody(
      *          required=true,
      *
@@ -483,6 +493,8 @@ class AuthController extends Controller
      *      tags={"Customers Authentication"},
      *      summary="Customer verify reset password OTP",
      *      description="Customer verify reset password OTP",
+     *
+     *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
      *
      *      @OA\RequestBody(
      *          required=true,
@@ -621,6 +633,8 @@ class AuthController extends Controller
      *      tags={"Customers Authentication"},
      *      summary="Customer reset password",
      *      description="Customer reset password",
+     *
+     *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
      *
      *      @OA\RequestBody(
      *          required=true,
@@ -769,6 +783,8 @@ class AuthController extends Controller
      *      summary="Customer activate account",
      *      description="Customer activate account",
      *
+     *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
+     *
      *      @OA\RequestBody(
      *          required=true,
      *
@@ -897,6 +913,8 @@ class AuthController extends Controller
      *      tags={"Customers Authentication"},
      *      summary="Resend customer activation OTP",
      *      description="Resend customer activation OTP",
+     *
+     *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
      *
      *      @OA\RequestBody(
      *          required=true,

@@ -14,6 +14,11 @@
                 "summary": "Customer register",
                 "description": "Customer register",
                 "operationId": "a68f5dc0ed52bcea295a17ab6a038da1",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -174,6 +179,11 @@
                 "summary": "Customer login",
                 "description": "Customer login",
                 "operationId": "5b0625a23e04a9e7bc1aec2f39e59173",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -384,6 +394,11 @@
                 "summary": "Customer logout",
                 "description": "Customer logout",
                 "operationId": "042f4156f4d021cc444e06bd25e22132",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Customer logged out successfully",
@@ -433,6 +448,11 @@
                 "summary": "Customer update",
                 "description": "Customer update",
                 "operationId": "fbb69e36421f98cd6d7d07aae8b1e1ba",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -613,6 +633,11 @@
                 "summary": "Customer forgot password",
                 "description": "Customer forgot password",
                 "operationId": "d1a10d4b834501b47fa5d525b141f38c",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -750,6 +775,11 @@
                 "summary": "Customer verify reset password OTP",
                 "description": "Customer verify reset password OTP",
                 "operationId": "a1d54fae405c4424c6754e927d5a72a0",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -934,6 +964,11 @@
                 "summary": "Customer reset password",
                 "description": "Customer reset password",
                 "operationId": "0bfd1c22baee5464ef47ab975400aa7d",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1124,6 +1159,11 @@
                 "summary": "Customer activate account",
                 "description": "Customer activate account",
                 "operationId": "fe9994bbd3b6660082c4c6e3b77bffbc",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1321,6 +1361,11 @@
                 "summary": "Resend customer activation OTP",
                 "description": "Resend customer activation OTP",
                 "operationId": "4d856728bcafe1477f140538dd9460a3",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1496,6 +1541,11 @@
                 "summary": "Get customer profile",
                 "description": "Get customer profile",
                 "operationId": "3cf1ee4da67bdcadc9c4b86cfdb0427a",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Customer profile fetched successfully",
@@ -1602,6 +1652,11 @@
                 "summary": "Delete customer account",
                 "description": "Permanently delete the authenticated customer account and all related data",
                 "operationId": "1601be65f8dad2089319137817091b29",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Customer account deleted successfully",
@@ -1683,6 +1738,9 @@
                 "summary": "Get all memorized ayahs",
                 "operationId": "d0d6aa487c6fd5d081dad3cb9e88eb66",
                 "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    },
                     {
                         "name": "status",
                         "in": "query",
@@ -1766,6 +1824,11 @@
                 ],
                 "summary": "Mark ayahs as memorized (bulk)",
                 "operationId": "fa5504a9e0ac66c16f3e53fe9067a2ec",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1899,6 +1962,11 @@
                 ],
                 "summary": "Get last memorized ayah",
                 "operationId": "1ed2faea976cb9e0064250f419891f8a",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Last memorized ayah fetched successfully",
@@ -1964,6 +2032,11 @@
                 ],
                 "summary": "Get memorized ayahs summary by surah",
                 "operationId": "b027866f4c820272d87e76fea3032507",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Memorized summary fetched successfully",
@@ -2037,6 +2110,11 @@
                 "summary": "Customer social register",
                 "description": "Customer social register",
                 "operationId": "9c9e332f220e35287ae1c21c4190f3fb",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -2201,6 +2279,11 @@
                 "summary": "Customer social login",
                 "description": "Customer social login",
                 "operationId": "4edc83b99f25c1e0c9d50990ddcec15e",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -2374,6 +2457,22 @@
         }
     },
     "components": {
+        "parameters": {
+            "Accept-Language": {
+                "name": "Accept-Language",
+                "in": "header",
+                "description": "Preferred language for application response (ar, en)",
+                "required": false,
+                "schema": {
+                    "type": "string",
+                    "default": "ar",
+                    "enum": [
+                        "ar",
+                        "en"
+                    ]
+                }
+            }
+        },
         "securitySchemes": {
             "sanctum": {
                 "type": "http",

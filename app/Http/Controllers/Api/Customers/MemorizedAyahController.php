@@ -18,6 +18,8 @@ class MemorizedAyahController extends Controller
      *     summary="Mark ayahs as memorized (bulk)",
      *     security={{"sanctum":{}}},
      *
+     *     @OA\Parameter(ref="#/components/parameters/Accept-Language"),
+     *
      *     @OA\RequestBody(
      *         required=true,
      *
@@ -215,6 +217,7 @@ class MemorizedAyahController extends Controller
      *     summary="Get all memorized ayahs",
      *     security={{"sanctum":{}}},
      *
+     *     @OA\Parameter(ref="#/components/parameters/Accept-Language"),
      *     @OA\Parameter(
      *         name="status",
      *         in="query",
@@ -279,6 +282,8 @@ class MemorizedAyahController extends Controller
      *     summary="Get last memorized ayah",
      *     security={{"sanctum":{}}},
      *
+     *     @OA\Parameter(ref="#/components/parameters/Accept-Language"),
+     *
      *     @OA\Response(
      *         response=200,
      *         description="Last memorized ayah fetched successfully",
@@ -324,6 +329,8 @@ class MemorizedAyahController extends Controller
      *     tags={"Memorized Ayahs"},
      *     summary="Get memorized ayahs summary by surah",
      *     security={{"sanctum":{}}},
+     *
+     *     @OA\Parameter(ref="#/components/parameters/Accept-Language"),
      *
      *     @OA\Response(
      *         response=200,

@@ -20,6 +20,8 @@ class CustomersController extends Controller
      *      description="Get customer profile",
      *      security={{"sanctum":{}}},
      *
+     *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
+     *
      *      @OA\Response(
      *          response=200,
      *          description="Customer profile fetched successfully",
@@ -73,6 +75,8 @@ class CustomersController extends Controller
      *      summary="Delete customer account",
      *      description="Permanently delete the authenticated customer account and all related data",
      *      security={{"sanctum":{}}},
+     *
+     *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
      *
      *      @OA\Response(
      *          response=200,

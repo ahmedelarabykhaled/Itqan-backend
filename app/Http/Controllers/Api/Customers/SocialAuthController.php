@@ -20,6 +20,8 @@ class SocialAuthController extends Controller
      *      summary="Customer social register",
      *      description="Customer social register",
      *
+     *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
+     *
      *      @OA\RequestBody(
      *          required=true,
      *
@@ -101,6 +103,8 @@ class SocialAuthController extends Controller
      *      tags={"Customers Social Authentication"},
      *      summary="Customer social login",
      *      description="Customer social login",
+     *
+     *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
      *
      *      @OA\RequestBody(
      *          required=true,
