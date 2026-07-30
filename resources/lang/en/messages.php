@@ -6,4 +6,8 @@ return [
     'validation_error' => 'Validation error',
     'server_error' => 'Server error',
     'unauthenticated' => 'Unauthenticated.',
+    'memorized_ayahs_fetched_successfully' => 'Memorized ayahs fetched successfully',
+    'ayahs_memorized_successfully' => 'Ayahs memorized successfully',
+    'last_memorized_ayah_fetched_successfully' => 'Last memorized ayah fetched successfully',
+    'memorized_ayahs_summary_fetched_successfully' => 'Memorized ayahs summary fetched successfully',
 ];

@@ -51,4 +51,7 @@ return [
     // Token validation
     'token_required' => 'حقل الرمز (token) مطلوب.',
     'token_string' => 'يجب أن يكون الرمز (token) نصًا.',
+
+    'customer_profile_fetched_successfully' => 'تم جلب ملف المستخدم بنجاح',
+    'customer_updated_successfully' => 'تم تحديث ملف المستخدم بنجاح',
 ];

@@ -51,4 +51,7 @@ return [
     // Token validation
     'token_required' => 'The token field is required.',
     'token_string' => 'The token must be a string.',
+
+    'customer_profile_fetched_successfully' => 'Customer profile fetched successfully',
+    'customer_updated_successfully' => 'Customer updated successfully',
 ];

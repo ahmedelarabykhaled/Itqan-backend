@@ -97,7 +97,7 @@ class AuthController extends Controller
         $customer->notify(new ActivateAccountOtpNotification($otp));
 
         return ApiResponse::success(
-            message: 'Customer registered successfully',
+            message: __('messages.customer_registered_successfully'),
             data: $customer,
             status: 200
         );

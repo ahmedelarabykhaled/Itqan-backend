@@ -206,7 +206,7 @@ class MemorizedAyahController extends Controller
 
         return ApiResponse::success(
             data: $memorizedAyahs,
-            message: 'Ayahs memorized successfully'
+            message: __('messages.ayahs_memorized_successfully')
         );
     }
 
@@ -264,14 +264,14 @@ class MemorizedAyahController extends Controller
         $memorizedAyahs = UserMemorizedAyah::query()
             ->where('user_id', $request->user()->id)
             ->when($request->filled('status'), fn ($query) => $query->whereJsonContains('statuses', $request->input('status')))
-            ->select(['surah_id', 'ayah_number', 'statuses'])
+            ->select(['surah_id', 'ayah_number', 'statuses', 'updated_at'])
             ->orderBy('surah_id')
             ->orderBy('ayah_number')
             ->get();
 
         return ApiResponse::success(
             data: $memorizedAyahs,
-            message: 'Memorized ayahs fetched successfully'
+            message: __('messages.memorized_ayahs_fetched_successfully')
         );
     }
 
@@ -319,7 +319,7 @@ class MemorizedAyahController extends Controller
 
         return ApiResponse::success(
             data: $lastMemorizedAyah,
-            message: 'Last memorized ayah fetched successfully'
+            message: __('messages.last_memorized_ayah_fetched_successfully')
         );
     }
 
@@ -376,7 +376,7 @@ class MemorizedAyahController extends Controller
 
         return ApiResponse::success(
             data: $summary,
-            message: 'Memorized summary fetched successfully'
+            message: __('messages.memorized_ayahs_summary_fetched_successfully')
         );
     }
 }

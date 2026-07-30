@@ -62,7 +62,7 @@ class CustomersController extends Controller
         $customer = $request->user();
 
         return ApiResponse::success(
-            message: 'Customer profile fetched successfully',
+            message: __('customers.customer_profile_fetched_successfully'),
             data: $customer,
             status: 200
         );
