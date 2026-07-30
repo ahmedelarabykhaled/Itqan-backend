@@ -1869,10 +1869,24 @@
                                                     "type": "string",
                                                     "example": "memorized",
                                                     "nullable": true
+                                                },
+                                                "updated_at": {
+                                                    "description": "Optional custom timestamp for updated_at. If omitted, current server time is used.",
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2026-07-30T17:25:00.000000Z",
+                                                    "nullable": true
                                                 }
                                             },
                                             "type": "object"
                                         }
+                                    },
+                                    "updated_at": {
+                                        "description": "Optional fallback custom timestamp for updated_at if not specified per ayah",
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2026-07-30T17:25:00.000000Z",
+                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -1915,6 +1929,11 @@
                                                         "type": "string",
                                                         "format": "date-time",
                                                         "example": "2026-04-20T10:00:00.000000Z"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2026-07-30T17:25:00.000000Z"
                                                     },
                                                     "statuses": {
                                                         "type": "array",

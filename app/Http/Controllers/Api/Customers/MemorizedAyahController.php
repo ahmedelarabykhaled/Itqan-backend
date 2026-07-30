@@ -43,9 +43,11 @@ class MemorizedAyahController extends Controller
      *                         description="Map of status name to boolean flag (true to add/keep, false to remove, omitted to preserve existing state. If all statuses become false/empty, the record is deleted.)",
      *                         example={"memorized": true, "bookmarked": false, "saved": false}
      *                     ),
-     *                     @OA\Property(property="status", type="string", nullable=true, example="memorized", description="Deprecated single status string for backward compatibility")
+     *                     @OA\Property(property="status", type="string", nullable=true, example="memorized", description="Deprecated single status string for backward compatibility"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", nullable=true, example="2026-07-30T17:25:00.000000Z", description="Optional custom timestamp for updated_at. If omitted, current server time is used.")
      *                 )
-     *             )
+     *             ),
+     *             @OA\Property(property="updated_at", type="string", format="date-time", nullable=true, example="2026-07-30T17:25:00.000000Z", description="Optional fallback custom timestamp for updated_at if not specified per ayah")
      *         )
      *     ),
      *
@@ -65,6 +67,7 @@ class MemorizedAyahController extends Controller
      *                     @OA\Property(property="surah_id", type="integer", example=2),
      *                     @OA\Property(property="ayah_number", type="integer", example=255),
      *                     @OA\Property(property="memorized_at", type="string", format="date-time", example="2026-04-20T10:00:00.000000Z"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time", example="2026-07-30T17:25:00.000000Z"),
      *                     @OA\Property(
      *                         property="statuses",
      *                         type="array",
@@ -98,10 +101,13 @@ class MemorizedAyahController extends Controller
             'ayahs.*.ayah_number' => ['required', 'integer', 'min:1'],
             'ayahs.*.statuses' => ['nullable', 'array'],
             'ayahs.*.status' => ['nullable', 'string'],
+            'ayahs.*.updated_at' => ['nullable', 'date'],
+            'updated_at' => ['nullable', 'date'],
         ]);
 
         $userId = $request->user()->id;
-        $memorizedAt = Carbon::now();
+        $now = Carbon::now();
+        $rootUpdatedAt = isset($validated['updated_at']) ? Carbon::parse($validated['updated_at']) : null;
 
         $existingRecords = UserMemorizedAyah::query()
             ->where('user_id', $userId)
@@ -159,12 +165,18 @@ class MemorizedAyahController extends Controller
                     'ayah_number' => $ayah['ayah_number'],
                 ];
             } else {
+                $ayahUpdatedAt = isset($ayah['updated_at'])
+                    ? Carbon::parse($ayah['updated_at'])
+                    : ($rootUpdatedAt ?? $now);
+
                 $rowsToUpsert[] = [
                     'user_id' => $userId,
                     'surah_id' => $ayah['surah_id'],
                     'ayah_number' => $ayah['ayah_number'],
-                    'memorized_at' => $memorizedAt,
+                    'memorized_at' => $ayahUpdatedAt,
                     'statuses' => json_encode($finalStatuses),
+                    'created_at' => $now,
+                    'updated_at' => $ayahUpdatedAt,
                 ];
             }
         }
@@ -187,7 +199,7 @@ class MemorizedAyahController extends Controller
             UserMemorizedAyah::query()->upsert(
                 $rowsToUpsert,
                 uniqueBy: ['user_id', 'surah_id', 'ayah_number'],
-                update: ['memorized_at', 'statuses'],
+                update: ['memorized_at', 'statuses', 'updated_at'],
             );
         }
 
@@ -201,7 +213,7 @@ class MemorizedAyahController extends Controller
                     );
                 }
             })
-            ->select(['surah_id', 'ayah_number', 'memorized_at', 'statuses'])
+            ->select(['surah_id', 'ayah_number', 'memorized_at', 'statuses', 'updated_at'])
             ->get();
 
         return ApiResponse::success(

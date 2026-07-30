@@ -319,4 +319,34 @@ class MemorizedAyahBulkStoreTest extends TestCase
         $response->assertOk()
             ->assertJsonCount(2, 'data');
     }
+
+    public function test_bulk_store_uses_custom_updated_at_when_provided(): void
+    {
+        $customTimestamp = '2026-07-15T12:30:00.000000Z';
+
+        $payload = [
+            'ayahs' => [
+                [
+                    'surah_id' => 1,
+                    'ayah_number' => 1,
+                    'statuses' => ['memorized'],
+                    'updated_at' => $customTimestamp,
+                ],
+            ],
+        ];
+
+        $response = $this->postJson('/api/v1/customers/memorized', $payload, [
+            'Authorization' => 'Bearer '.$this->token,
+        ]);
+
+        $response->assertOk();
+
+        $record = UserMemorizedAyah::query()
+            ->where('user_id', $this->customer->id)
+            ->where('surah_id', 1)
+            ->where('ayah_number', 1)
+            ->first();
+
+        $this->assertEquals('2026-07-15 12:30:00', $record->updated_at->format('Y-m-d H:i:s'));
+    }
 }
