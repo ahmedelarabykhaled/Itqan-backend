@@ -11,7 +11,7 @@ class UserMemorizedAyah extends Model
         'surah_id',
         'ayah_number',
         'memorized_at',
-        'status',
+        'statuses',
     ];
 
     /**
@@ -21,6 +21,7 @@ class UserMemorizedAyah extends Model
     {
         return [
             'memorized_at' => 'datetime',
+            'statuses' => 'array',
         ];
     }
 }

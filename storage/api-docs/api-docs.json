@@ -1502,7 +1502,7 @@
                     {
                         "name": "status",
                         "in": "query",
-                        "description": "Filter by status value",
+                        "description": "Filter by status value within statuses array",
                         "required": false,
                         "schema": {
                             "type": "string",
@@ -1541,10 +1541,16 @@
                                                         "type": "integer",
                                                         "example": 1
                                                     },
-                                                    "status": {
-                                                        "type": "string",
-                                                        "example": "memorized",
-                                                        "nullable": true
+                                                    "statuses": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        },
+                                                        "example": [
+                                                            "memorized",
+                                                            "bookmarked",
+                                                            "saved"
+                                                        ]
                                                     }
                                                 },
                                                 "type": "object"
@@ -1601,7 +1607,18 @@
                                                     "type": "integer",
                                                     "example": 255
                                                 },
+                                                "statuses": {
+                                                    "description": "Map of status name to boolean flag (true to add/keep, false to remove, omitted to preserve existing state. If all statuses become false/empty, the record is deleted.)",
+                                                    "type": "object",
+                                                    "example": {
+                                                        "memorized": true,
+                                                        "bookmarked": false,
+                                                        "saved": false
+                                                    },
+                                                    "nullable": true
+                                                },
                                                 "status": {
+                                                    "description": "Deprecated single status string for backward compatibility",
                                                     "type": "string",
                                                     "example": "memorized",
                                                     "nullable": true
@@ -1652,9 +1669,15 @@
                                                         "format": "date-time",
                                                         "example": "2026-04-20T10:00:00.000000Z"
                                                     },
-                                                    "status": {
-                                                        "type": "string",
-                                                        "example": "memorized",
+                                                    "statuses": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        },
+                                                        "example": [
+                                                            "memorized",
+                                                            "saved"
+                                                        ],
                                                         "nullable": true
                                                     }
                                                 },

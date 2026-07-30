@@ -34,7 +34,14 @@ class MemorizedAyahController extends Controller
      *
      *                     @OA\Property(property="surah_id", type="integer", example=2),
      *                     @OA\Property(property="ayah_number", type="integer", example=255),
-     *                     @OA\Property(property="status", type="string", nullable=true, example="memorized")
+     *                     @OA\Property(
+     *                         property="statuses",
+     *                         type="object",
+     *                         nullable=true,
+     *                         description="Map of status name to boolean flag (true to add/keep, false to remove, omitted to preserve existing state. If all statuses become false/empty, the record is deleted.)",
+     *                         example={"memorized": true, "bookmarked": false, "saved": false}
+     *                     ),
+     *                     @OA\Property(property="status", type="string", nullable=true, example="memorized", description="Deprecated single status string for backward compatibility")
      *                 )
      *             )
      *         )
@@ -56,9 +63,17 @@ class MemorizedAyahController extends Controller
      *                     @OA\Property(property="surah_id", type="integer", example=2),
      *                     @OA\Property(property="ayah_number", type="integer", example=255),
      *                     @OA\Property(property="memorized_at", type="string", format="date-time", example="2026-04-20T10:00:00.000000Z"),
-     *                     @OA\Property(property="status", type="string", nullable=true, example="memorized")
+     *                     @OA\Property(
+     *                         property="statuses",
+     *                         type="array",
+     *                         nullable=true,
+     *
+     *                         @OA\Items(type="string"),
+     *                         example={"memorized", "saved"}
+     *                     )
      *                 )
      *             ),
+     *
      *             @OA\Property(property="errors", type="null", example=null)
      *         )
      *     ),
@@ -79,25 +94,100 @@ class MemorizedAyahController extends Controller
             'ayahs' => ['required', 'array', 'min:1'],
             'ayahs.*.surah_id' => ['required', 'integer', 'min:1'],
             'ayahs.*.ayah_number' => ['required', 'integer', 'min:1'],
+            'ayahs.*.statuses' => ['nullable', 'array'],
             'ayahs.*.status' => ['nullable', 'string'],
         ]);
 
         $userId = $request->user()->id;
         $memorizedAt = Carbon::now();
 
-        $rows = array_map(fn (array $ayah): array => [
-            'user_id' => $userId,
-            'surah_id' => $ayah['surah_id'],
-            'ayah_number' => $ayah['ayah_number'],
-            'memorized_at' => $memorizedAt,
-            'status' => $ayah['status'] ?? null,
-        ], $validated['ayahs']);
+        $existingRecords = UserMemorizedAyah::query()
+            ->where('user_id', $userId)
+            ->where(function ($query) use ($validated): void {
+                foreach ($validated['ayahs'] as $ayah) {
+                    $query->orWhere(fn ($q) => $q
+                        ->where('surah_id', $ayah['surah_id'])
+                        ->where('ayah_number', $ayah['ayah_number'])
+                    );
+                }
+            })
+            ->get()
+            ->keyBy(fn ($item) => $item->surah_id.'_'.$item->ayah_number);
 
-        UserMemorizedAyah::query()->upsert(
-            $rows,
-            uniqueBy: ['user_id', 'surah_id', 'ayah_number'],
-            update: ['memorized_at', 'status'],
-        );
+        $rowsToUpsert = [];
+        $keysToDelete = [];
+
+        foreach ($validated['ayahs'] as $ayah) {
+            $key = $ayah['surah_id'].'_'.$ayah['ayah_number'];
+            $existing = $existingRecords->get($key);
+            $currentStatuses = $existing?->statuses ?? [];
+
+            if (isset($ayah['statuses']) && is_array($ayah['statuses'])) {
+                if (array_is_list($ayah['statuses'])) {
+                    foreach ($ayah['statuses'] as $st) {
+                        if (is_string($st) && ! in_array($st, $currentStatuses, true)) {
+                            $currentStatuses[] = $st;
+                        }
+                    }
+                } else {
+                    foreach ($ayah['statuses'] as $statusKey => $flag) {
+                        if ($flag) {
+                            if (! in_array($statusKey, $currentStatuses, true)) {
+                                $currentStatuses[] = $statusKey;
+                            }
+                        } else {
+                            $currentStatuses = array_values(array_filter(
+                                $currentStatuses,
+                                fn ($st) => $st !== $statusKey
+                            ));
+                        }
+                    }
+                }
+            } elseif (isset($ayah['status']) && $ayah['status'] !== null) {
+                if (! in_array($ayah['status'], $currentStatuses, true)) {
+                    $currentStatuses[] = $ayah['status'];
+                }
+            }
+
+            $finalStatuses = array_values(array_unique($currentStatuses));
+
+            if (empty($finalStatuses)) {
+                $keysToDelete[] = [
+                    'surah_id' => $ayah['surah_id'],
+                    'ayah_number' => $ayah['ayah_number'],
+                ];
+            } else {
+                $rowsToUpsert[] = [
+                    'user_id' => $userId,
+                    'surah_id' => $ayah['surah_id'],
+                    'ayah_number' => $ayah['ayah_number'],
+                    'memorized_at' => $memorizedAt,
+                    'statuses' => json_encode($finalStatuses),
+                ];
+            }
+        }
+
+        if (! empty($keysToDelete)) {
+            UserMemorizedAyah::query()
+                ->where('user_id', $userId)
+                ->where(function ($query) use ($keysToDelete): void {
+                    foreach ($keysToDelete as $item) {
+                        $query->orWhere(fn ($q) => $q
+                            ->where('surah_id', $item['surah_id'])
+                            ->where('ayah_number', $item['ayah_number'])
+                        );
+                    }
+                })
+                ->delete();
+        }
+
+        if (! empty($rowsToUpsert)) {
+            UserMemorizedAyah::query()->upsert(
+                $rowsToUpsert,
+                uniqueBy: ['user_id', 'surah_id', 'ayah_number'],
+                update: ['memorized_at', 'statuses'],
+            );
+        }
 
         $memorizedAyahs = UserMemorizedAyah::query()
             ->where('user_id', $userId)
@@ -109,7 +199,7 @@ class MemorizedAyahController extends Controller
                     );
                 }
             })
-            ->select(['surah_id', 'ayah_number', 'memorized_at', 'status'])
+            ->select(['surah_id', 'ayah_number', 'memorized_at', 'statuses'])
             ->get();
 
         return ApiResponse::success(
@@ -129,7 +219,7 @@ class MemorizedAyahController extends Controller
      *         name="status",
      *         in="query",
      *         required=false,
-     *         description="Filter by status value",
+     *         description="Filter by status value within statuses array",
      *
      *         @OA\Schema(type="string", example="memorized")
      *     ),
@@ -149,7 +239,7 @@ class MemorizedAyahController extends Controller
      *
      *                     @OA\Property(property="surah_id", type="integer", example=1),
      *                     @OA\Property(property="ayah_number", type="integer", example=1),
-     *                     @OA\Property(property="status", type="string", nullable=true, example="memorized")
+     *                     @OA\Property(property="statuses", type="array", @OA\Items(type="string"), example={"memorized", "bookmarked", "saved"})
      *                 )
      *             ),
      *             @OA\Property(property="errors", type="null", example=null)
@@ -170,8 +260,8 @@ class MemorizedAyahController extends Controller
 
         $memorizedAyahs = UserMemorizedAyah::query()
             ->where('user_id', $request->user()->id)
-            ->when($request->filled('status'), fn ($query) => $query->where('status', $request->input('status')))
-            ->select(['surah_id', 'ayah_number', 'status'])
+            ->when($request->filled('status'), fn ($query) => $query->whereJsonContains('statuses', $request->input('status')))
+            ->select(['surah_id', 'ayah_number', 'statuses'])
             ->orderBy('surah_id')
             ->orderBy('ayah_number')
             ->get();

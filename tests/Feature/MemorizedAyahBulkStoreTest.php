@@ -30,13 +30,13 @@ class MemorizedAyahBulkStoreTest extends TestCase
         $this->token = $this->customer->createToken('auth-token')->plainTextToken;
     }
 
-    public function test_bulk_store_creates_new_memorized_ayahs(): void
+    public function test_bulk_store_creates_new_memorized_ayahs_with_multiple_statuses(): void
     {
         $payload = [
             'ayahs' => [
-                ['surah_id' => 1, 'ayah_number' => 1, 'status' => 'memorized'],
-                ['surah_id' => 1, 'ayah_number' => 2, 'status' => 'weak'],
-                ['surah_id' => 2, 'ayah_number' => 255],
+                ['surah_id' => 1, 'ayah_number' => 1, 'statuses' => ['memorized', 'bookmarked', 'saved']],
+                ['surah_id' => 1, 'ayah_number' => 2, 'statuses' => ['weak']],
+                ['surah_id' => 2, 'ayah_number' => 255, 'statuses' => ['memorized']],
             ],
         ];
 
@@ -49,29 +49,100 @@ class MemorizedAyahBulkStoreTest extends TestCase
             ->assertJsonPath('message', 'Ayahs memorized successfully')
             ->assertJsonCount(3, 'data');
 
-        $this->assertDatabaseHas('user_memorized_ayahs', [
+        $record1 = UserMemorizedAyah::query()
+            ->where('user_id', $this->customer->id)
+            ->where('surah_id', 1)
+            ->where('ayah_number', 1)
+            ->first();
+
+        $this->assertNotNull($record1);
+        $this->assertEqualsCanonicalizing(['memorized', 'bookmarked', 'saved'], $record1->statuses);
+
+        $record2 = UserMemorizedAyah::query()
+            ->where('user_id', $this->customer->id)
+            ->where('surah_id', 1)
+            ->where('ayah_number', 2)
+            ->first();
+
+        $this->assertNotNull($record2);
+        $this->assertEqualsCanonicalizing(['weak'], $record2->statuses);
+    }
+
+    public function test_bulk_store_with_statuses_dictionary_flags(): void
+    {
+        UserMemorizedAyah::query()->create([
             'user_id' => $this->customer->id,
             'surah_id' => 1,
             'ayah_number' => 1,
-            'status' => 'memorized',
+            'memorized_at' => now(),
+            'statuses' => ['memorized', 'saved'],
         ]);
 
-        $this->assertDatabaseHas('user_memorized_ayahs', [
+        $payload = [
+            'ayahs' => [
+                [
+                    'surah_id' => 1,
+                    'ayah_number' => 1,
+                    'statuses' => [
+                        'bookmarked' => true,
+                        'memorized' => false,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->postJson('/api/v1/customers/memorized', $payload, [
+            'Authorization' => 'Bearer '.$this->token,
+        ]);
+
+        $response->assertOk();
+
+        $record = UserMemorizedAyah::query()
+            ->where('user_id', $this->customer->id)
+            ->where('surah_id', 1)
+            ->where('ayah_number', 1)
+            ->first();
+
+        $this->assertNotNull($record);
+        $this->assertEqualsCanonicalizing(['saved', 'bookmarked'], $record->statuses);
+    }
+
+    public function test_bulk_store_deletes_record_when_all_statuses_are_cleared(): void
+    {
+        UserMemorizedAyah::query()->create([
             'user_id' => $this->customer->id,
             'surah_id' => 1,
-            'ayah_number' => 2,
-            'status' => 'weak',
+            'ayah_number' => 1,
+            'memorized_at' => now(),
+            'statuses' => ['memorized'],
         ]);
 
-        $this->assertDatabaseHas('user_memorized_ayahs', [
+        $payload = [
+            'ayahs' => [
+                [
+                    'surah_id' => 1,
+                    'ayah_number' => 1,
+                    'statuses' => [
+                        'memorized' => false,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = $this->postJson('/api/v1/customers/memorized', $payload, [
+            'Authorization' => 'Bearer '.$this->token,
+        ]);
+
+        $response->assertOk();
+
+        $this->assertDatabaseMissing('user_memorized_ayahs', [
             'user_id' => $this->customer->id,
-            'surah_id' => 2,
-            'ayah_number' => 255,
-            'status' => null,
+            'surah_id' => 1,
+            'ayah_number' => 1,
         ]);
     }
 
-    public function test_bulk_store_with_single_ayah(): void
+    public function test_bulk_store_with_single_status_string_backward_compatibility(): void
     {
         $payload = [
             'ayahs' => [
@@ -87,7 +158,7 @@ class MemorizedAyahBulkStoreTest extends TestCase
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.surah_id', 3)
             ->assertJsonPath('data.0.ayah_number', 10)
-            ->assertJsonPath('data.0.status', 'memorized');
+            ->assertJsonPath('data.0.statuses.0', 'memorized');
     }
 
     public function test_bulk_store_updates_memorized_at_for_existing_ayahs(): void
@@ -99,11 +170,12 @@ class MemorizedAyahBulkStoreTest extends TestCase
             'surah_id' => 1,
             'ayah_number' => 1,
             'memorized_at' => $oldTime,
+            'statuses' => ['memorized'],
         ]);
 
         $payload = [
             'ayahs' => [
-                ['surah_id' => 1, 'ayah_number' => 1],
+                ['surah_id' => 1, 'ayah_number' => 1, 'statuses' => ['memorized', 'bookmarked']],
             ],
         ];
 
@@ -120,6 +192,7 @@ class MemorizedAyahBulkStoreTest extends TestCase
             ->first();
 
         $this->assertTrue($record->memorized_at->greaterThan($oldTime));
+        $this->assertEqualsCanonicalizing(['memorized', 'bookmarked'], $record->statuses);
     }
 
     public function test_bulk_store_fails_when_unauthenticated(): void
@@ -175,14 +248,14 @@ class MemorizedAyahBulkStoreTest extends TestCase
             ->assertJsonValidationErrors(['ayahs.0.ayah_number']);
     }
 
-    public function test_index_returns_status_in_response(): void
+    public function test_index_returns_statuses_in_response(): void
     {
         UserMemorizedAyah::query()->create([
             'user_id' => $this->customer->id,
             'surah_id' => 1,
             'ayah_number' => 1,
             'memorized_at' => now(),
-            'status' => 'memorized',
+            'statuses' => ['memorized', 'bookmarked'],
         ]);
 
         $response = $this->getJson('/api/v1/customers/memorized', [
@@ -190,63 +263,53 @@ class MemorizedAyahBulkStoreTest extends TestCase
         ]);
 
         $response->assertOk()
-            ->assertJsonPath('data.0.status', 'memorized');
+            ->assertJsonPath('data.0.statuses', ['memorized', 'bookmarked']);
     }
 
-    public function test_index_filters_by_status(): void
+    public function test_index_filters_by_status_using_json_contains(): void
     {
-        UserMemorizedAyah::query()->insert([
-            [
-                'user_id' => $this->customer->id,
-                'surah_id' => 1,
-                'ayah_number' => 1,
-                'memorized_at' => now(),
-                'status' => 'memorized',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'user_id' => $this->customer->id,
-                'surah_id' => 1,
-                'ayah_number' => 2,
-                'memorized_at' => now(),
-                'status' => 'weak',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+        UserMemorizedAyah::query()->create([
+            'user_id' => $this->customer->id,
+            'surah_id' => 1,
+            'ayah_number' => 1,
+            'memorized_at' => now(),
+            'statuses' => ['memorized', 'bookmarked'],
         ]);
 
-        $response = $this->getJson('/api/v1/customers/memorized?status=memorized', [
+        UserMemorizedAyah::query()->create([
+            'user_id' => $this->customer->id,
+            'surah_id' => 1,
+            'ayah_number' => 2,
+            'memorized_at' => now(),
+            'statuses' => ['weak'],
+        ]);
+
+        $response = $this->getJson('/api/v1/customers/memorized?status=bookmarked', [
             'Authorization' => 'Bearer '.$this->token,
         ]);
 
         $response->assertOk()
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.ayah_number', 1)
-            ->assertJsonPath('data.0.status', 'memorized');
+            ->assertJsonPath('data.0.statuses', ['memorized', 'bookmarked']);
     }
 
     public function test_index_returns_all_when_no_status_filter(): void
     {
-        UserMemorizedAyah::query()->insert([
-            [
-                'user_id' => $this->customer->id,
-                'surah_id' => 1,
-                'ayah_number' => 1,
-                'memorized_at' => now(),
-                'status' => 'memorized',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'user_id' => $this->customer->id,
-                'surah_id' => 1,
-                'ayah_number' => 2,
-                'memorized_at' => now(),
-                'status' => 'weak',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+        UserMemorizedAyah::query()->create([
+            'user_id' => $this->customer->id,
+            'surah_id' => 1,
+            'ayah_number' => 1,
+            'memorized_at' => now(),
+            'statuses' => ['memorized'],
+        ]);
+
+        UserMemorizedAyah::query()->create([
+            'user_id' => $this->customer->id,
+            'surah_id' => 1,
+            'ayah_number' => 2,
+            'memorized_at' => now(),
+            'statuses' => ['weak'],
         ]);
 
         $response = $this->getJson('/api/v1/customers/memorized', [
