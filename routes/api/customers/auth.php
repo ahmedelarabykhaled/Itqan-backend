@@ -9,6 +9,7 @@ Route::post('register', [AuthController::class, 'register']);
 Route::post('social-login', [SocialAuthController::class, 'socialLogin']);
 Route::post('social-register', [SocialAuthController::class, 'socialRegister']);
 Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('verify-reset-otp', [AuthController::class, 'verifyResetOtp']);
 Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
 Route::post('activate-account', [AuthController::class, 'activateAccount']);
 Route::post('resend-activation-otp', [AuthController::class, 'resendActivationOtp']);

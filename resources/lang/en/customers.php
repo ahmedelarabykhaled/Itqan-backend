@@ -13,6 +13,7 @@ return [
     'code_expired' => 'Code expired.',
     'invalid_token' => 'Invalid token.',
     'token_expired' => 'Token expired.',
+    'otp_valid' => 'OTP is valid.',
 
     // Name validation
     'name_required' => 'The name field is required.',

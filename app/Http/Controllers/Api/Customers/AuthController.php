@@ -10,6 +10,7 @@ use App\Http\Requests\CustomerUpdateRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\ResendActivationOtpRequest;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\VerifyResetOtpRequest;
 use App\Http\Responses\ApiResponse;
 use App\Models\Customer;
 use App\Notifications\ActivateAccountOtpNotification;
@@ -475,6 +476,144 @@ class AuthController extends Controller
         );
     }
 
+    // verify reset otp
+    /**
+     * @OA\Post(
+     *      path="/api/v1/customers/auth/verify-reset-otp",
+     *      tags={"Customers Authentication"},
+     *      summary="Customer verify reset password OTP",
+     *      description="Customer verify reset password OTP",
+     *
+     *      @OA\RequestBody(
+     *          required=true,
+     *
+     *          @OA\JsonContent(
+     *              required={"email", "token"},
+     *
+     *              @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+     *              @OA\Property(property="token", type="string", example="123456"),
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=200,
+     *          description="OTP is valid",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="success", type="boolean", example=true),
+     *              @OA\Property(property="status", type="integer", example=200),
+     *              @OA\Property(property="message", type="string", example="OTP is valid."),
+     *              @OA\Property(property="data", type="object",
+     *                  @OA\Property(property="email", type="string", format="email", example="john@example.com"),
+     *                  @OA\Property(property="valid", type="boolean", example=true)
+     *              ),
+     *              @OA\Property(property="errors", type="null", example=null)
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=400,
+     *          description="Invalid or expired token",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="success", type="boolean", example=false),
+     *              @OA\Property(property="status", type="integer", example=400),
+     *              @OA\Property(property="message", type="string", example="Invalid token."),
+     *              @OA\Property(property="data", type="null", example=null),
+     *              @OA\Property(property="errors", type="array", @OA\Items(type="string", example="Invalid token."))
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=404,
+     *          description="Customer not found",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="success", type="boolean", example=false),
+     *              @OA\Property(property="status", type="integer", example=404),
+     *              @OA\Property(property="message", type="string", example="Customer not found."),
+     *              @OA\Property(property="data", type="null", example=null),
+     *              @OA\Property(property="errors", type="array", @OA\Items(type="string", example="Customer not found."))
+     *          )
+     *      ),
+     *
+     *      @OA\Response(
+     *          response=422,
+     *          description="Validation error",
+     *
+     *          @OA\JsonContent(
+     *
+     *              @OA\Property(property="success", type="boolean", example=false),
+     *              @OA\Property(property="status", type="integer", example=422),
+     *              @OA\Property(property="message", type="string", example="Validation Error"),
+     *              @OA\Property(property="data", type="null", example=null),
+     *              @OA\Property(property="errors", type="array", @OA\Items(type="string", example="The token field is required."))
+     *          )
+     *      )
+     * )
+     */
+    public function verifyResetOtp(VerifyResetOtpRequest $request)
+    {
+        $customer = Customer::where('email', $request->email)->first();
+        if (! $customer) {
+            return ApiResponse::error(
+                message: __('customers.customer_not_found'),
+                errors: [
+                    __('customers.customer_not_found'),
+                ],
+                status: 404
+            );
+        }
+
+        $record = DB::table('password_reset_tokens')
+            ->where('email', $request->email)
+            ->first();
+
+        if (! $record) {
+            return ApiResponse::error(
+                message: __('customers.invalid_token'),
+                errors: [
+                    __('customers.invalid_token'),
+                ],
+                status: 400
+            );
+        }
+
+        if (\Carbon\Carbon::parse($record->created_at)->addMinutes(60)->isPast()) {
+            return ApiResponse::error(
+                message: __('customers.token_expired'),
+                errors: [
+                    __('customers.token_expired'),
+                ],
+                status: 400
+            );
+        }
+
+        $token = $request->token ?? $request->otp ?? $request->code;
+
+        if (! Hash::check($token, $record->token)) {
+            return ApiResponse::error(
+                message: __('customers.invalid_token'),
+                errors: [
+                    __('customers.invalid_token'),
+                ],
+                status: 400
+            );
+        }
+
+        return ApiResponse::success(
+            message: __('customers.otp_valid'),
+            data: [
+                'email' => $customer->email,
+                'valid' => true,
+            ],
+            status: 200
+        );
+    }
+
     // reset password
     /**
      * @OA\Post(
@@ -583,7 +722,7 @@ class AuthController extends Controller
         }
 
         // تحقق من انتهاء الصلاحية (60 دقيقة مثلاً)
-        if (now()->diffInMinutes($record->created_at) > 60) {
+        if (\Carbon\Carbon::parse($record->created_at)->addMinutes(60)->isPast()) {
             return ApiResponse::error(
                 message: __('customers.token_expired'),
                 errors: [
