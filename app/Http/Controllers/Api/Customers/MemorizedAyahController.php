@@ -324,7 +324,7 @@ class MemorizedAyahController extends Controller
     {
         $lastMemorizedAyah = UserMemorizedAyah::query()
             ->where('user_id', $request->user()->id)
-            ->select(['surah_id', 'ayah_number', 'memorized_at'])
+            ->select(['surah_id', 'ayah_number', 'memorized_at','updated_at'])
             ->orderByDesc('memorized_at')
             ->orderByDesc('id')
             ->first();
