@@ -86,7 +86,7 @@ class AdminDashboardTest extends TestCase
         Livewire::test(ContentStatsOverview::class)
             ->assertOk()
             ->assertSee(__('admin.content.heading'))
-            ->assertSee(__('admin.content.surahs'))
+            ->assertSee(__('admin.content.mushaf_images'))
             ->assertSee(__('admin.content.tafaseer'));
     }
 

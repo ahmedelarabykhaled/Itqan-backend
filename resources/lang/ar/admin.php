@@ -91,10 +91,6 @@ return [
     'content' => [
         'heading' => 'محتوى المصحف',
         'description' => 'ما هو متاح حاليًا داخل التطبيق من مصاحف وتفاسير.',
-        'surahs' => 'السور المتاحة',
-        'surahs_description' => 'من أصل :total سورة',
-        'ayahs' => 'إجمالي الآيات',
-        'ayahs_description' => 'مجموع آيات السور المسجلة',
         'mushaf_images' => 'المصاحف المصوّرة',
         'mushaf_images_description' => ':count صفحة مرفوعة',
         'tafaseer' => 'التفاسير والترجمات',

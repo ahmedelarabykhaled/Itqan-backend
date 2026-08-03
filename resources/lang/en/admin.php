@@ -91,10 +91,6 @@ return [
     'content' => [
         'heading' => 'Quran content',
         'description' => 'What is currently available inside the app.',
-        'surahs' => 'Available surahs',
-        'surahs_description' => 'Out of :total surahs',
-        'ayahs' => 'Total ayahs',
-        'ayahs_description' => 'Sum of ayahs across registered surahs',
         'mushaf_images' => 'Mushaf image sets',
         'mushaf_images_description' => ':count uploaded pages',
         'tafaseer' => 'Tafaseer & translations',

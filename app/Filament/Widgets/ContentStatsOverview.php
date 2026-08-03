@@ -5,7 +5,6 @@ namespace App\Filament\Widgets;
 use App\Models\QuranImage;
 use App\Models\QuranImagePart;
 use App\Models\QuranTranslation;
-use App\Models\Surah;
 use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
@@ -13,8 +12,6 @@ use Illuminate\Support\Number;
 
 class ContentStatsOverview extends StatsOverviewWidget
 {
-    protected const TOTAL_SURAHS_IN_QURAN = 114;
-
     protected static ?int $sort = 2;
 
     protected ?string $pollingInterval = null;
@@ -34,23 +31,10 @@ class ContentStatsOverview extends StatsOverviewWidget
      */
     protected function getStats(): array
     {
-        $surahs = Surah::query()->count();
         $imageSets = QuranImage::query()->count();
         $tafaseer = QuranTranslation::query()->count();
 
         return [
-            Stat::make(__('admin.content.surahs'), Number::format($surahs))
-                ->description(__('admin.content.surahs_description', [
-                    'total' => static::TOTAL_SURAHS_IN_QURAN,
-                ]))
-                ->descriptionIcon(Heroicon::OutlinedQueueList)
-                ->color($surahs >= static::TOTAL_SURAHS_IN_QURAN ? 'success' : 'warning'),
-
-            Stat::make(__('admin.content.ayahs'), Number::format((int) Surah::query()->sum('total_ayahs')))
-                ->description(__('admin.content.ayahs_description'))
-                ->descriptionIcon(Heroicon::OutlinedBookOpen)
-                ->color('primary'),
-
             Stat::make(__('admin.content.mushaf_images'), Number::format($imageSets))
                 ->description(__('admin.content.mushaf_images_description', [
                     'count' => Number::format(QuranImagePart::query()->count()),
