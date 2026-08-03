@@ -17,7 +17,11 @@ class QuranImagePartsTable
             ->columns([
                 TextColumn::make('source_url')
                     ->label('Source URL')
-                    ->limit(40)
+                    // ->limit(40)
+                    ->copyable()
+                    ->copyMessage('Copied!')
+                    // ->openUrlInNewTab(true)
+                    // ->linkToUrl(fn (?string $state): ?string => $state ? url($state) : null)
                     ->toggleable(),
                 TextColumn::make('file')
                     ->label('File')
