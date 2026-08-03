@@ -149,7 +149,7 @@ class MemorizedAyahController extends Controller
                         }
                     }
                 }
-            } 
+            }
             // elseif (isset($ayah['status']) && $ayah['status'] !== null) {
             //     if (! in_array($ayah['status'], $currentStatuses, true)) {
             //         $currentStatuses[] = $ayah['status'];
@@ -323,7 +323,7 @@ class MemorizedAyahController extends Controller
     {
         $lastMemorizedAyah = UserMemorizedAyah::query()
             ->where('user_id', $request->user()->id)
-            ->select(['surah_id', 'ayah_number', 'memorized_at','updated_at'])
+            ->select(['surah_id', 'ayah_number', 'memorized_at', 'updated_at'])
             ->orderByDesc('memorized_at')
             ->orderByDesc('id')
             ->first();
@@ -388,6 +388,46 @@ class MemorizedAyahController extends Controller
         return ApiResponse::success(
             data: $summary,
             message: __('messages.memorized_ayahs_summary_fetched_successfully')
+        );
+    }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/customers/memorized",
+     *     tags={"Memorized Ayahs"},
+     *     summary="Clear all memorized ayah history for the authenticated customer",
+     *     security={{"sanctum":{}}},
+     *
+     *     @OA\Parameter(ref="#/components/parameters/Accept-Language"),
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="Memorized history cleared successfully",
+     *
+     *         @OA\JsonContent(
+     *
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="status", type="integer", example=200),
+     *             @OA\Property(property="message", type="string", example="Memorized history cleared successfully"),
+     *             @OA\Property(property="data", type="null", example=null),
+     *             @OA\Property(property="errors", type="null", example=null)
+     *         )
+     *     ),
+     *
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated"
+     *     )
+     * )
+     */
+    public function destroy(Request $request): JsonResponse
+    {
+        UserMemorizedAyah::query()
+            ->where('user_id', $request->user()->id)
+            ->delete();
+
+        return ApiResponse::success(
+            message: __('messages.memorized_history_cleared_successfully')
         );
     }
 }
