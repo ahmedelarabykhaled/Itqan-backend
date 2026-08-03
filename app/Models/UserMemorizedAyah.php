@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserMemorizedAyah extends Model
 {
@@ -23,5 +24,15 @@ class UserMemorizedAyah extends Model
             'memorized_at' => 'datetime',
             'statuses' => 'array',
         ];
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'user_id');
+    }
+
+    public function surah(): BelongsTo
+    {
+        return $this->belongsTo(Surah::class, 'surah_id', 'surah_id');
     }
 }

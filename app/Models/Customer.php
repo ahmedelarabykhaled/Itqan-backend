@@ -2,17 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class Customer extends Authenticatable implements CanResetPassword
 {
     use HasApiTokens;
     use Notifiable;
-    
+
     protected $fillable = [
         'name',
         'email',
@@ -48,6 +49,11 @@ class Customer extends Authenticatable implements CanResetPassword
         ];
     }
 
+    public function memorizedAyahs(): HasMany
+    {
+        return $this->hasMany(UserMemorizedAyah::class, 'user_id');
+    }
+
     public function scopeVerified($query)
     {
         return $query->whereNotNull('email_verified_at');
@@ -60,6 +66,6 @@ class Customer extends Authenticatable implements CanResetPassword
 
     public function getAvatarAttribute($value)
     {
-        return $value ? url('storage/' . $value) : null;
+        return $value ? url('storage/'.$value) : null;
     }
 }

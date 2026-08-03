@@ -29,6 +29,8 @@ return [
         'gender' => 'النوع',
         'language_code' => 'اللغة',
         'minimum_version' => 'أقل إصدار مدعوم',
+        'ayah_number' => 'رقم الآية',
+        'memorized_at' => 'تاريخ الحفظ',
         'name' => 'الاسم',
         'parts_count' => 'عدد الأجزاء',
         'password' => 'كلمة المرور',
@@ -37,10 +39,18 @@ return [
         'remote_last_modified' => 'آخر تحديث في المصدر',
         'save_to' => 'مسار الحفظ',
         'source_url' => 'رابط المصدر',
+        'statuses' => 'الحالات',
+        'surah_id' => 'رقم السورة',
         'translator' => 'المترجم',
         'translator_foreign' => 'اسم المترجم بالإنجليزية',
         'updated_at' => 'تاريخ آخر تعديل',
         'width' => 'العرض',
+    ],
+
+    'memorized_statuses' => [
+        'memorized' => 'محفوظ',
+        'bookmarked' => 'معلّم',
+        'saved' => 'محفوظ للمراجعة',
     ],
 
     'gender' => [
@@ -54,6 +64,12 @@ return [
 
     'relations' => [
         'quran_image_parts' => 'أجزاء المصحف',
+        'memorized_ayahs' => 'سجل الحفظ',
+    ],
+
+    'customer' => [
+        'memorized_count' => 'عدد الآيات في سجل الحفظ',
+        'last_memorized_at' => 'آخر نشاط حفظ',
     ],
 
     'resources' => [

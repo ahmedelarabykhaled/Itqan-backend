@@ -29,6 +29,8 @@ return [
         'gender' => 'Gender',
         'language_code' => 'Language',
         'minimum_version' => 'Minimum version',
+        'ayah_number' => 'Ayah number',
+        'memorized_at' => 'Memorized at',
         'name' => 'Name',
         'parts_count' => 'Parts',
         'password' => 'Password',
@@ -37,10 +39,18 @@ return [
         'remote_last_modified' => 'Remote last modified',
         'save_to' => 'Save to',
         'source_url' => 'Source URL',
+        'statuses' => 'Statuses',
+        'surah_id' => 'Surah number',
         'translator' => 'Translator',
         'translator_foreign' => 'Translator name in English',
         'updated_at' => 'Updated at',
         'width' => 'Width',
+    ],
+
+    'memorized_statuses' => [
+        'memorized' => 'Memorized',
+        'bookmarked' => 'Bookmarked',
+        'saved' => 'Saved for review',
     ],
 
     'gender' => [
@@ -54,6 +64,12 @@ return [
 
     'relations' => [
         'quran_image_parts' => 'Mushaf parts',
+        'memorized_ayahs' => 'Memorization history',
+    ],
+
+    'customer' => [
+        'memorized_count' => 'Memorization history count',
+        'last_memorized_at' => 'Last memorization activity',
     ],
 
     'resources' => [
