@@ -20,7 +20,17 @@ class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
+
+    public static function getModelLabel(): string
+    {
+        return __('admin.resources.customer.label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.resources.customer.plural_label');
+    }
 
     public static function form(Schema $schema): Schema
     {

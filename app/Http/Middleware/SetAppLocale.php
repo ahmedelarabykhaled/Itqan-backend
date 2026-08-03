@@ -21,7 +21,7 @@ class SetAppLocale
             $locale = substr($locale, 0, 2);
         }
 
-        if ($locale && in_array($locale, ['ar', 'en'], true)) {
+        if ($locale && in_array($locale, config('app.supported_locales', ['en']), true)) {
             app()->setLocale($locale);
         }
 

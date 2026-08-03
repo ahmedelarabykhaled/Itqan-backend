@@ -23,13 +23,17 @@ class QuranImageResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'width';
 
-    protected static ?string $navigationLabel = 'Quran Images';
-
-    protected static ?string $modelLabel = 'Quran Image';
-
-    protected static ?string $pluralModelLabel = 'Quran Images';
-
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
+
+    public static function getModelLabel(): string
+    {
+        return __('admin.resources.quran_image.label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.resources.quran_image.plural_label');
+    }
 
     public static function form(Schema $schema): Schema
     {

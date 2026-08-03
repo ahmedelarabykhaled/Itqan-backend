@@ -86,6 +86,32 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Supported Locales
+    |--------------------------------------------------------------------------
+    |
+    | The locales the application is able to serve. Incoming requests may only
+    | switch to one of these locales, either through the API's language
+    | negotiation or through the admin panel's language switcher.
+    |
+    */
+
+    'supported_locales' => ['ar', 'en'],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Panel Locale
+    |--------------------------------------------------------------------------
+    |
+    | The locale the admin panel falls back to when the administrator has not
+    | picked one yet. It is kept separate from the application locale so the
+    | API can stay English-first while the panel stays Arabic-first.
+    |
+    */
+
+    'panel_locale' => env('ADMIN_PANEL_LOCALE', 'ar'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |

@@ -22,13 +22,17 @@ class QuranTranslationResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'display_name';
 
-    protected static ?string $navigationLabel = 'Quran Tafaseer';
-
-    protected static ?string $modelLabel = 'Quran Tafseer';
-
-    protected static ?string $pluralModelLabel = 'Quran Tafseer';
-
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
+
+    public static function getModelLabel(): string
+    {
+        return __('admin.resources.quran_translation.label');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('admin.resources.quran_translation.plural_label');
+    }
 
     public static function form(Schema $schema): Schema
     {
