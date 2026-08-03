@@ -53,7 +53,9 @@ class SocialAuthController extends Controller
      *                  @OA\Property(property="avatar", type="string", nullable=true, example="https://example.com/avatar.jpg"),
      *                  @OA\Property(property="provider", type="string", example="google"),
      *                  @OA\Property(property="provider_id", type="string", example="12345678"),
-     *                  @OA\Property(property="email_verified_at", type="string", format="date-time", example="2026-02-20T10:00:00.000000Z")
+     *                  @OA\Property(property="email_verified_at", type="string", format="date-time", example="2026-02-20T10:00:00.000000Z"),
+     *                  @OA\Property(property="token", type="string", example="1|xYzAbCdEf123")
+     * 
      *              ),
      *              @OA\Property(property="errors", type="null", example=null)
      *          )
@@ -88,6 +90,9 @@ class SocialAuthController extends Controller
             'provider_id' => $data['provider_id'],
             'email_verified_at' => now(),
         ]);
+
+        $token = $customer->createToken('auth-token')->plainTextToken;
+        $customer->token = $token;
 
         return ApiResponse::success(
             message: __('customers.customer_registered_successfully'),

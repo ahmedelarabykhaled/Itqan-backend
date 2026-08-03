@@ -43,11 +43,9 @@ class MemorizedAyahController extends Controller
      *                         description="Map of status name to boolean flag (true to add/keep, false to remove, omitted to preserve existing state. If all statuses become false/empty, the record is deleted.)",
      *                         example={"memorized": true, "bookmarked": false, "saved": false}
      *                     ),
-     *                     @OA\Property(property="status", type="string", nullable=true, example="memorized", description="Deprecated single status string for backward compatibility"),
      *                     @OA\Property(property="updated_at", type="string", format="date-time", nullable=true, example="2026-07-30T17:25:00.000000Z", description="Optional custom timestamp for updated_at. If omitted, current server time is used.")
      *                 )
      *             ),
-     *             @OA\Property(property="updated_at", type="string", format="date-time", nullable=true, example="2026-07-30T17:25:00.000000Z", description="Optional fallback custom timestamp for updated_at if not specified per ayah")
      *         )
      *     ),
      *
@@ -100,9 +98,9 @@ class MemorizedAyahController extends Controller
             'ayahs.*.surah_id' => ['required', 'integer', 'min:1'],
             'ayahs.*.ayah_number' => ['required', 'integer', 'min:1'],
             'ayahs.*.statuses' => ['nullable', 'array'],
-            'ayahs.*.status' => ['nullable', 'string'],
+            // 'ayahs.*.status' => ['nullable', 'string'],
             'ayahs.*.updated_at' => ['nullable', 'date'],
-            'updated_at' => ['nullable', 'date'],
+            // 'updated_at' => ['nullable', 'date'],
         ]);
 
         $userId = $request->user()->id;
@@ -151,11 +149,12 @@ class MemorizedAyahController extends Controller
                         }
                     }
                 }
-            } elseif (isset($ayah['status']) && $ayah['status'] !== null) {
-                if (! in_array($ayah['status'], $currentStatuses, true)) {
-                    $currentStatuses[] = $ayah['status'];
-                }
-            }
+            } 
+            // elseif (isset($ayah['status']) && $ayah['status'] !== null) {
+            //     if (! in_array($ayah['status'], $currentStatuses, true)) {
+            //         $currentStatuses[] = $ayah['status'];
+            //     }
+            // }
 
             $finalStatuses = array_values(array_unique($currentStatuses));
 
@@ -176,7 +175,7 @@ class MemorizedAyahController extends Controller
                     'memorized_at' => $ayahUpdatedAt,
                     'statuses' => json_encode($finalStatuses),
                     'created_at' => $now,
-                    'updated_at' => $ayahUpdatedAt,
+                    // 'updated_at' => $ayahUpdatedAt,
                 ];
             }
         }
