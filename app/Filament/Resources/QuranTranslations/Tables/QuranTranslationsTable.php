@@ -2,10 +2,13 @@
 
 namespace App\Filament\Resources\QuranTranslations\Tables;
 
+use App\Models\QuranTranslation;
+use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -55,13 +58,21 @@ class QuranTranslationsTable
             ->filters([
                 SelectFilter::make('language_code')
                     ->label('Language')
-                    ->options(fn (): array => \App\Models\QuranTranslation::query()
+                    ->options(fn (): array => QuranTranslation::query()
                         ->distinct()
                         ->orderBy('language_code')
                         ->pluck('language_code', 'language_code')
                         ->all()),
             ])
             ->recordActions([
+                Action::make('download')
+                    ->label('Download')
+                    ->icon(Heroicon::OutlinedArrowDownTray)
+                    ->visible(fn (QuranTranslation $record): bool => filled($record->file) && Storage::disk('public')->exists($record->file))
+                    ->action(fn (QuranTranslation $record) => Storage::disk('public')->download(
+                        $record->file,
+                        $record->file_name ?: basename($record->file),
+                    )),
                 ViewAction::make(),
                 EditAction::make(),
             ])

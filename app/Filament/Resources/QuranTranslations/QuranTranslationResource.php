@@ -22,11 +22,11 @@ class QuranTranslationResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'display_name';
 
-    protected static ?string $navigationLabel = 'Quran Translations';
+    protected static ?string $navigationLabel = 'Quran Tafaseer';
 
-    protected static ?string $modelLabel = 'Quran Translation';
+    protected static ?string $modelLabel = 'Quran Tafseer';
 
-    protected static ?string $pluralModelLabel = 'Quran Translations';
+    protected static ?string $pluralModelLabel = 'Quran Tafseer';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
 
