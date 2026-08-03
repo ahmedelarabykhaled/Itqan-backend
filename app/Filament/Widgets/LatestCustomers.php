@@ -33,13 +33,11 @@ class LatestCustomers extends TableWidget
                     ->defaultImageUrl(fn (Customer $record): string => Filament::getUserAvatarUrl($record)),
 
                 TextColumn::make('name')
-                    ->label(__('admin.latest_customers.name'))
                     ->weight('medium')
                     ->description(fn (Customer $record): string => $record->email)
                     ->searchable(['name', 'email']),
 
                 TextColumn::make('provider')
-                    ->label(__('admin.latest_customers.provider'))
                     ->badge()
                     ->placeholder(__('admin.latest_customers.provider_email')),
 

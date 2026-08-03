@@ -12,10 +12,10 @@ class CustomerInfolist
         return $schema
             ->components([
                 TextEntry::make('name'),
-                TextEntry::make('email')
-                    ->label('Email address'),
+                TextEntry::make('email'),
                 TextEntry::make('gender')
                     ->badge()
+                    ->formatStateUsing(fn (?string $state): ?string => $state ? __("admin.gender.{$state}") : null)
                     ->placeholder('-'),
                 TextEntry::make('avatar')
                     ->placeholder('-'),

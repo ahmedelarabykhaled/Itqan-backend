@@ -21,7 +21,6 @@ class QuranTranslationsTable
         return $table
             ->columns([
                 TextColumn::make('external_id')
-                    ->label('ID')
                     ->sortable(),
                 TextColumn::make('display_name')
                     ->searchable()
@@ -34,15 +33,12 @@ class QuranTranslationsTable
                     ->limit(30)
                     ->toggleable(),
                 TextColumn::make('current_version')
-                    ->label('Version')
                     ->sortable(),
                 TextColumn::make('file')
-                    ->label('File')
                     ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
                     ->url(fn (?string $state): ?string => $state ? Storage::disk('public')->url($state) : null)
                     ->openUrlInNewTab(),
                 TextColumn::make('remote_last_modified')
-                    ->label('Remote Updated')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -57,7 +53,6 @@ class QuranTranslationsTable
             ])
             ->filters([
                 SelectFilter::make('language_code')
-                    ->label('Language')
                     ->options(fn (): array => QuranTranslation::query()
                         ->distinct()
                         ->orderBy('language_code')
@@ -66,7 +61,7 @@ class QuranTranslationsTable
             ])
             ->recordActions([
                 Action::make('download')
-                    ->label('Download')
+                    ->label(fn (): string => __('admin.actions.download'))
                     ->icon(Heroicon::OutlinedArrowDownTray)
                     ->visible(fn (QuranTranslation $record): bool => filled($record->file) && Storage::disk('public')->exists($record->file))
                     ->action(fn (QuranTranslation $record) => Storage::disk('public')->download(

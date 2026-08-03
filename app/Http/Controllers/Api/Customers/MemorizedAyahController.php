@@ -395,20 +395,30 @@ class MemorizedAyahController extends Controller
      * @OA\Delete(
      *     path="/api/v1/customers/memorized",
      *     tags={"Memorized Ayahs"},
-     *     summary="Clear all memorized ayah history for the authenticated customer",
+     *     summary="Remove a status from all memorized ayah records for the authenticated customer",
      *     security={{"sanctum":{}}},
      *
      *     @OA\Parameter(ref="#/components/parameters/Accept-Language"),
      *
+     *     @OA\RequestBody(
+     *         required=true,
+     *
+     *         @OA\JsonContent(
+     *             required={"status"},
+     *
+     *             @OA\Property(property="status", type="string", example="memorized", description="Status to remove from all user records. Records with no remaining statuses are deleted.")
+     *         )
+     *     ),
+     *
      *     @OA\Response(
      *         response=200,
-     *         description="Memorized history cleared successfully",
+     *         description="Status cleared successfully",
      *
      *         @OA\JsonContent(
      *
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="status", type="integer", example=200),
-     *             @OA\Property(property="message", type="string", example="Memorized history cleared successfully"),
+     *             @OA\Property(property="message", type="string", example="The memorized status has been cleared successfully"),
      *             @OA\Property(property="data", type="null", example=null),
      *             @OA\Property(property="errors", type="null", example=null)
      *         )
@@ -417,17 +427,44 @@ class MemorizedAyahController extends Controller
      *     @OA\Response(
      *         response=401,
      *         description="Unauthenticated"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
      *     )
      * )
      */
     public function destroy(Request $request): JsonResponse
     {
+        $validated = $request->validate([
+            'status' => ['required', 'string'],
+        ]);
+
+        $statusToRemove = $validated['status'];
+
         UserMemorizedAyah::query()
             ->where('user_id', $request->user()->id)
-            ->delete();
+            ->whereJsonContains('statuses', $statusToRemove)
+            ->get()
+            ->each(function (UserMemorizedAyah $record) use ($statusToRemove): void {
+                $finalStatuses = array_values(array_filter(
+                    $record->statuses ?? [],
+                    fn (string $status): bool => $status !== $statusToRemove
+                ));
+
+                if ($finalStatuses === []) {
+                    $record->delete();
+
+                    return;
+                }
+
+                $record->update(['statuses' => $finalStatuses]);
+            });
 
         return ApiResponse::success(
-            message: __('messages.memorized_history_cleared_successfully')
+            message: __('messages.memorized_status_cleared_successfully', [
+                'status' => $statusToRemove,
+            ])
         );
     }
 }

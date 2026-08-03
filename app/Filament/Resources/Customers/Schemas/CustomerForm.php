@@ -16,14 +16,16 @@ class CustomerForm
                 TextInput::make('name')
                     ->required(),
                 TextInput::make('email')
-                    ->label('Email address')
                     ->email()
                     ->required(),
                 TextInput::make('password')
                     ->password()
                     ->required(),
                 Select::make('gender')
-                    ->options(['male' => 'Male', 'female' => 'Female']),
+                    ->options(fn (): array => [
+                        'male' => __('admin.gender.male'),
+                        'female' => __('admin.gender.female'),
+                    ]),
                 TextInput::make('avatar'),
                 Select::make('provider')
                     ->options(['google' => 'Google', 'apple' => 'Apple']),

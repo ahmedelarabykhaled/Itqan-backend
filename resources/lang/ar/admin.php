@@ -10,6 +10,52 @@ return [
         'subheading' => 'نظرة عامة على محتوى المصحف ونشاط الحفظ لدى مستخدمي التطبيق.',
     ],
 
+    /*
+     * Labels for model attributes, applied automatically to every table column,
+     * form field, infolist entry and table filter of the same name.
+     */
+    'attributes' => [
+        'avatar' => 'الصورة الشخصية',
+        'created_at' => 'تاريخ الإنشاء',
+        'current_version' => 'الإصدار الحالي',
+        'display_name' => 'الاسم المعروض',
+        'download_type' => 'نوع التنزيل',
+        'email' => 'البريد الإلكتروني',
+        'email_verified_at' => 'تاريخ تفعيل البريد',
+        'external_id' => 'المعرّف الخارجي',
+        'file' => 'الملف',
+        'file_name' => 'اسم الملف',
+        'file_url' => 'رابط الملف',
+        'gender' => 'النوع',
+        'language_code' => 'اللغة',
+        'minimum_version' => 'أقل إصدار مدعوم',
+        'name' => 'الاسم',
+        'parts_count' => 'عدد الأجزاء',
+        'password' => 'كلمة المرور',
+        'provider' => 'طريقة التسجيل',
+        'provider_id' => 'معرّف المزوّد',
+        'remote_last_modified' => 'آخر تحديث في المصدر',
+        'save_to' => 'مسار الحفظ',
+        'source_url' => 'رابط المصدر',
+        'translator' => 'المترجم',
+        'translator_foreign' => 'اسم المترجم بالإنجليزية',
+        'updated_at' => 'تاريخ آخر تعديل',
+        'width' => 'العرض',
+    ],
+
+    'gender' => [
+        'male' => 'ذكر',
+        'female' => 'أنثى',
+    ],
+
+    'actions' => [
+        'download' => 'تنزيل',
+    ],
+
+    'relations' => [
+        'quran_image_parts' => 'أجزاء المصحف',
+    ],
+
     'resources' => [
         'user' => [
             'label' => 'مشرف',
@@ -70,8 +116,6 @@ return [
 
     'latest_customers' => [
         'heading' => 'آخر المستخدمين المسجلين',
-        'name' => 'الاسم',
-        'provider' => 'طريقة التسجيل',
         'provider_email' => 'البريد الإلكتروني',
         'status' => 'الحالة',
         'verified' => 'مفعّل',

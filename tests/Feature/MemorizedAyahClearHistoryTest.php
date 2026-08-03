@@ -30,9 +30,9 @@ class MemorizedAyahClearHistoryTest extends TestCase
         $this->token = $this->customer->createToken('auth-token')->plainTextToken;
     }
 
-    public function test_clear_memorized_history_deletes_all_records_for_authenticated_customer(): void
+    public function test_clear_status_removes_status_from_all_records_for_authenticated_customer(): void
     {
-        UserMemorizedAyah::query()->create([
+        $recordWithOnlyMemorized = UserMemorizedAyah::query()->create([
             'user_id' => $this->customer->id,
             'surah_id' => 1,
             'ayah_number' => 1,
@@ -40,28 +40,51 @@ class MemorizedAyahClearHistoryTest extends TestCase
             'statuses' => ['memorized'],
         ]);
 
-        UserMemorizedAyah::query()->create([
+        $recordWithMultipleStatuses = UserMemorizedAyah::query()->create([
             'user_id' => $this->customer->id,
             'surah_id' => 2,
             'ayah_number' => 255,
             'memorized_at' => now(),
+            'statuses' => ['memorized', 'bookmarked'],
+        ]);
+
+        $recordWithoutMemorized = UserMemorizedAyah::query()->create([
+            'user_id' => $this->customer->id,
+            'surah_id' => 3,
+            'ayah_number' => 1,
+            'memorized_at' => now(),
             'statuses' => ['bookmarked'],
         ]);
 
-        $response = $this->deleteJson('/api/v1/customers/memorized', [], [
+        $response = $this->deleteJson('/api/v1/customers/memorized', [
+            'status' => 'memorized',
+        ], [
             'Authorization' => 'Bearer '.$this->token,
         ]);
 
         $response->assertOk()
             ->assertJsonPath('success', true)
-            ->assertJsonPath('message', __('messages.memorized_history_cleared_successfully'));
+            ->assertJsonPath('message', __('messages.memorized_status_cleared_successfully', [
+                'status' => 'memorized',
+            ]));
 
         $this->assertDatabaseMissing('user_memorized_ayahs', [
+            'id' => $recordWithOnlyMemorized->id,
+        ]);
+
+        $this->assertDatabaseHas('user_memorized_ayahs', [
+            'id' => $recordWithMultipleStatuses->id,
             'user_id' => $this->customer->id,
         ]);
+
+        $recordWithMultipleStatuses->refresh();
+        $this->assertEqualsCanonicalizing(['bookmarked'], $recordWithMultipleStatuses->statuses);
+
+        $recordWithoutMemorized->refresh();
+        $this->assertEqualsCanonicalizing(['bookmarked'], $recordWithoutMemorized->statuses);
     }
 
-    public function test_clear_memorized_history_does_not_affect_other_customers(): void
+    public function test_clear_status_does_not_affect_other_customers(): void
     {
         $otherCustomer = Customer::create([
             'name' => 'Other Customer',
@@ -87,7 +110,9 @@ class MemorizedAyahClearHistoryTest extends TestCase
             'statuses' => ['memorized'],
         ]);
 
-        $response = $this->deleteJson('/api/v1/customers/memorized', [], [
+        $response = $this->deleteJson('/api/v1/customers/memorized', [
+            'status' => 'memorized',
+        ], [
             'Authorization' => 'Bearer '.$this->token,
         ]);
 
@@ -102,27 +127,56 @@ class MemorizedAyahClearHistoryTest extends TestCase
             'id' => $otherRecord->id,
             'user_id' => $otherCustomer->id,
         ]);
+
+        $otherRecord->refresh();
+        $this->assertEqualsCanonicalizing(['memorized'], $otherRecord->statuses);
     }
 
-    public function test_clear_memorized_history_fails_when_unauthenticated(): void
+    public function test_clear_status_fails_when_unauthenticated(): void
     {
-        $response = $this->deleteJson('/api/v1/customers/memorized');
+        $response = $this->deleteJson('/api/v1/customers/memorized', [
+            'status' => 'memorized',
+        ]);
 
         $response->assertUnauthorized();
     }
 
-    public function test_clear_memorized_history_succeeds_when_no_records_exist(): void
+    public function test_clear_status_succeeds_when_no_records_have_that_status(): void
     {
-        $response = $this->deleteJson('/api/v1/customers/memorized', [], [
+        UserMemorizedAyah::query()->create([
+            'user_id' => $this->customer->id,
+            'surah_id' => 1,
+            'ayah_number' => 1,
+            'memorized_at' => now(),
+            'statuses' => ['bookmarked'],
+        ]);
+
+        $response = $this->deleteJson('/api/v1/customers/memorized', [
+            'status' => 'memorized',
+        ], [
             'Authorization' => 'Bearer '.$this->token,
         ]);
 
         $response->assertOk()
             ->assertJsonPath('success', true)
-            ->assertJsonPath('message', __('messages.memorized_history_cleared_successfully'));
+            ->assertJsonPath('message', __('messages.memorized_status_cleared_successfully', [
+                'status' => 'memorized',
+            ]));
 
-        $this->assertDatabaseMissing('user_memorized_ayahs', [
+        $this->assertDatabaseHas('user_memorized_ayahs', [
             'user_id' => $this->customer->id,
+            'surah_id' => 1,
+            'ayah_number' => 1,
         ]);
+    }
+
+    public function test_clear_status_fails_when_status_is_missing(): void
+    {
+        $response = $this->deleteJson('/api/v1/customers/memorized', [], [
+            'Authorization' => 'Bearer '.$this->token,
+        ]);
+
+        $response->assertUnprocessable()
+            ->assertJsonValidationErrors(['status']);
     }
 }

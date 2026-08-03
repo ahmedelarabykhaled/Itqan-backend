@@ -15,10 +15,8 @@ class QuranImageInfolist
                 TextEntry::make('width')
                     ->suffix(' px'),
                 TextEntry::make('source_url')
-                    ->label('Source URL')
                     ->placeholder('-'),
                 TextEntry::make('file')
-                    ->label('File')
                     ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
                     ->url(fn (?string $state): ?string => $state ? Storage::disk('public')->url($state) : null)
                     ->openUrlInNewTab()

@@ -10,6 +10,52 @@ return [
         'subheading' => 'An overview of the Quran content and the memorization activity of your app users.',
     ],
 
+    /*
+     * Labels for model attributes, applied automatically to every table column,
+     * form field, infolist entry and table filter of the same name.
+     */
+    'attributes' => [
+        'avatar' => 'Avatar',
+        'created_at' => 'Created at',
+        'current_version' => 'Current version',
+        'display_name' => 'Display name',
+        'download_type' => 'Download type',
+        'email' => 'Email address',
+        'email_verified_at' => 'Email verified at',
+        'external_id' => 'External ID',
+        'file' => 'File',
+        'file_name' => 'File name',
+        'file_url' => 'File URL',
+        'gender' => 'Gender',
+        'language_code' => 'Language',
+        'minimum_version' => 'Minimum version',
+        'name' => 'Name',
+        'parts_count' => 'Parts',
+        'password' => 'Password',
+        'provider' => 'Sign-up method',
+        'provider_id' => 'Provider ID',
+        'remote_last_modified' => 'Remote last modified',
+        'save_to' => 'Save to',
+        'source_url' => 'Source URL',
+        'translator' => 'Translator',
+        'translator_foreign' => 'Translator name in English',
+        'updated_at' => 'Updated at',
+        'width' => 'Width',
+    ],
+
+    'gender' => [
+        'male' => 'Male',
+        'female' => 'Female',
+    ],
+
+    'actions' => [
+        'download' => 'Download',
+    ],
+
+    'relations' => [
+        'quran_image_parts' => 'Mushaf parts',
+    ],
+
     'resources' => [
         'user' => [
             'label' => 'Administrator',
@@ -70,8 +116,6 @@ return [
 
     'latest_customers' => [
         'heading' => 'Latest registered users',
-        'name' => 'Name',
-        'provider' => 'Sign-up method',
         'provider_email' => 'Email address',
         'status' => 'Status',
         'verified' => 'Verified',

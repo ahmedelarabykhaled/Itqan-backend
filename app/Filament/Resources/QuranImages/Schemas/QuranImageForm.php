@@ -17,10 +17,8 @@ class QuranImageForm
                     ->required()
                     ->minValue(1),
                 TextInput::make('source_url')
-                    ->label('Source URL')
                     ->url(),
                 FileUpload::make('file')
-                    ->label('File')
                     ->acceptedFileTypes([
                         'application/zip',
                         'application/x-zip-compressed',

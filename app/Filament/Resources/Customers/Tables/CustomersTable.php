@@ -18,10 +18,10 @@ class CustomersTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
                     ->searchable(),
                 TextColumn::make('gender')
-                    ->badge(),
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state): ?string => $state ? __("admin.gender.{$state}") : null),
                 TextColumn::make('avatar')
                     ->searchable(),
                 TextColumn::make('provider')

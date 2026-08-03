@@ -13,10 +13,8 @@ class QuranImagePartForm
         return $schema
             ->components([
                 TextInput::make('source_url')
-                    ->label('Source URL')
                     ->url(),
                 FileUpload::make('file')
-                    ->label('File')
                     ->acceptedFileTypes([
                         'application/zip',
                         'application/x-zip-compressed',

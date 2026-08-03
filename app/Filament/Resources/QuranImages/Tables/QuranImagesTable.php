@@ -20,17 +20,14 @@ class QuranImagesTable
                     ->sortable()
                     ->suffix(' px'),
                 TextColumn::make('source_url')
-                    ->label('Source URL')
                     ->limit(40)
                     ->toggleable(),
                 TextColumn::make('file')
-                    ->label('File')
                     ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
                     ->url(fn (?string $state): ?string => $state ? Storage::disk('public')->url($state) : null)
                     ->openUrlInNewTab(),
                 TextColumn::make('parts_count')
                     ->counts('parts')
-                    ->label('Parts')
                     ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
