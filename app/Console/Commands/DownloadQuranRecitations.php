@@ -100,18 +100,21 @@ class DownloadQuranRecitations extends Command
         }
 
         $reciters = [];
-        $pattern = '#href="/data/([^"/]+)/?"#';
+        $pattern = '#<strong>([^<]+)</strong>\s*<a href="https://everyayah\.com/data/([^"]+)/"\s*target="_blank">\s*\(GO\)#';
 
-        if ($matches[1] === []) {
+        preg_match_all($pattern, $response->body(), $matches, PREG_SET_ORDER);
+
+        if ($matches === []) {
             $this->warn('Could not parse reciter links from everyayah.com.');
 
             return [];
         }
 
-        foreach (array_unique($matches[1]) as $slug) {
+        foreach ($matches as $match) {
+            $slug = $match[2];
             $reciters[] = [
                 'slug' => $slug,
-                'name' => $this->humanizeSlug($slug),
+                'name' => trim(html_entity_decode($match[1], ENT_QUOTES | ENT_HTML5)),
                 'bitrate' => $this->extractBitrate($slug),
             ];
         }
