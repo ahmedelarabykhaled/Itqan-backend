@@ -39,6 +39,11 @@ return [
         'remote_last_modified' => 'آخر تحديث في المصدر',
         'save_to' => 'مسار الحفظ',
         'source_url' => 'رابط المصدر',
+        'slug' => 'المعرّف',
+        'bitrate' => 'معدل البت',
+        'surah' => 'السورة',
+        'ayah' => 'الآية',
+        'ayahs_count' => 'عدد الآيات',
         'statuses' => 'الحالات',
         'surah_id' => 'رقم السورة',
         'translator' => 'المترجم',
@@ -64,6 +69,7 @@ return [
 
     'relations' => [
         'quran_image_parts' => 'أجزاء المصحف',
+        'quran_recitation_ayahs' => 'آيات التلاوة',
         'memorized_ayahs' => 'سجل الحفظ',
     ],
 
@@ -89,6 +95,10 @@ return [
             'label' => 'تفسير',
             'plural_label' => 'التفاسير والترجمات',
         ],
+        'quran_recitation' => [
+            'label' => 'تلاوة',
+            'plural_label' => 'أصوات المشايخ',
+        ],
     ],
 
     'audience' => [
@@ -111,6 +121,8 @@ return [
         'mushaf_images_description' => ':count صفحة مرفوعة',
         'tafaseer' => 'التفاسير والترجمات',
         'tafaseer_description' => 'متاحة بـ :count لغة',
+        'recitations' => 'أصوات المشايخ',
+        'recitations_description' => ':count ملف صوتي',
     ],
 
     'charts' => [

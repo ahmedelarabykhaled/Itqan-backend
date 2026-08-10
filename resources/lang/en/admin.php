@@ -39,6 +39,11 @@ return [
         'remote_last_modified' => 'Remote last modified',
         'save_to' => 'Save to',
         'source_url' => 'Source URL',
+        'slug' => 'Slug',
+        'bitrate' => 'Bitrate',
+        'surah' => 'Surah',
+        'ayah' => 'Ayah',
+        'ayahs_count' => 'Ayah files',
         'statuses' => 'Statuses',
         'surah_id' => 'Surah number',
         'translator' => 'Translator',
@@ -64,6 +69,7 @@ return [
 
     'relations' => [
         'quran_image_parts' => 'Mushaf parts',
+        'quran_recitation_ayahs' => 'Recitation ayahs',
         'memorized_ayahs' => 'Memorization history',
     ],
 
@@ -89,6 +95,10 @@ return [
             'label' => 'Tafseer',
             'plural_label' => 'Tafaseer & translations',
         ],
+        'quran_recitation' => [
+            'label' => 'Recitation',
+            'plural_label' => 'Quran recitations',
+        ],
     ],
 
     'audience' => [
@@ -111,6 +121,8 @@ return [
         'mushaf_images_description' => ':count uploaded pages',
         'tafaseer' => 'Tafaseer & translations',
         'tafaseer_description' => 'Available in :count languages',
+        'recitations' => 'Quran recitations',
+        'recitations_description' => ':count audio files',
     ],
 
     'charts' => [

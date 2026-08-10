@@ -87,7 +87,8 @@ class AdminDashboardTest extends TestCase
             ->assertOk()
             ->assertSee(__('admin.content.heading'))
             ->assertSee(__('admin.content.mushaf_images'))
-            ->assertSee(__('admin.content.tafaseer'));
+            ->assertSee(__('admin.content.tafaseer'))
+            ->assertSee(__('admin.content.recitations'));
     }
 
     public function test_memorization_chart_buckets_the_last_twelve_months(): void

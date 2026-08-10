@@ -36,6 +36,10 @@ class RouteServiceProvider extends ServiceProvider
             $this->app['router']->prefix('locations')->group(
                 base_path('routes/api/locations.php')
             );
+
+            $this->app['router']->prefix('quran')->group(
+                base_path('routes/api/quran.php')
+            );
         });
     }
 }

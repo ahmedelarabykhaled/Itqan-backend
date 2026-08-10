@@ -4,6 +4,8 @@ namespace App\Filament\Widgets;
 
 use App\Models\QuranImage;
 use App\Models\QuranImagePart;
+use App\Models\QuranRecitation;
+use App\Models\QuranRecitationAyah;
 use App\Models\QuranTranslation;
 use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
@@ -33,6 +35,7 @@ class ContentStatsOverview extends StatsOverviewWidget
     {
         $imageSets = QuranImage::query()->count();
         $tafaseer = QuranTranslation::query()->count();
+        $recitations = QuranRecitation::query()->count();
 
         return [
             Stat::make(__('admin.content.mushaf_images'), Number::format($imageSets))
@@ -48,6 +51,13 @@ class ContentStatsOverview extends StatsOverviewWidget
                 ]))
                 ->descriptionIcon(Heroicon::OutlinedLanguage)
                 ->color('success'),
+
+            Stat::make(__('admin.content.recitations'), Number::format($recitations))
+                ->description(__('admin.content.recitations_description', [
+                    'count' => Number::format(QuranRecitationAyah::query()->count()),
+                ]))
+                ->descriptionIcon(Heroicon::OutlinedSpeakerWave)
+                ->color('warning'),
         ];
     }
 }
