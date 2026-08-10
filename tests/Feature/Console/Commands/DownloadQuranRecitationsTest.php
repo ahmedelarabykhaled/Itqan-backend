@@ -78,7 +78,7 @@ class DownloadQuranRecitationsTest extends TestCase
 
         $recitation = QuranRecitation::query()->create([
             'slug' => 'Abdul_Basit_Mujawwad_128kbps',
-            'name' => 'Abdul Basit Mujawwad 128kbps',
+            'name_en' => 'Abdul Basit Mujawwad 128kbps',
             'bitrate' => '128kbps',
             'source_url' => 'https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps',
         ]);

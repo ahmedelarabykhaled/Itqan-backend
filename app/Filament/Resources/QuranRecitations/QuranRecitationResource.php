@@ -21,7 +21,7 @@ class QuranRecitationResource extends Resource
 {
     protected static ?string $model = QuranRecitation::class;
 
-    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $recordTitleAttribute = 'name_en';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSpeakerWave;
 

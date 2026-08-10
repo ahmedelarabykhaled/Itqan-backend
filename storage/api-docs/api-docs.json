@@ -2532,6 +2532,139 @@
                 }
             }
         },
+        "/api/v1/quran/recitations": {
+            "get": {
+                "tags": [
+                    "Quran Recitations"
+                ],
+                "summary": "List available Quran recitations",
+                "operationId": "c4277608c0a561eeca326b3ab9df0566",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recitations fetched successfully"
+                    }
+                }
+            }
+        },
+        "/api/v1/quran/recitations/{slug}": {
+            "get": {
+                "tags": [
+                    "Quran Recitations"
+                ],
+                "summary": "Get a Quran recitation by slug",
+                "operationId": "120fdaf3959d8b3000ebca73edb152c7",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    },
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recitation fetched successfully"
+                    },
+                    "404": {
+                        "description": "Recitation not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/quran/recitations/{slug}/ayahs": {
+            "get": {
+                "tags": [
+                    "Quran Recitations"
+                ],
+                "summary": "List ayah audio files for a recitation",
+                "operationId": "8f6284afc82344338b2b5adc0733ca08",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    },
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "surah",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recitation ayahs fetched successfully"
+                    },
+                    "404": {
+                        "description": "Recitation not found"
+                    }
+                }
+            }
+        },
+        "/api/v1/quran/recitations/{slug}/ayahs/{surah}/{ayah}": {
+            "get": {
+                "tags": [
+                    "Quran Recitations"
+                ],
+                "summary": "Get a single ayah audio file for a recitation",
+                "operationId": "c1dd14dbc80ecae3c2feb50f11e7061f",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Accept-Language"
+                    },
+                    {
+                        "name": "slug",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "surah",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "ayah",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Recitation ayah fetched successfully"
+                    },
+                    "404": {
+                        "description": "Recitation or ayah not found"
+                    }
+                }
+            }
+        },
         "/api/documentation": {
             "get": {
                 "operationId": "ad556256d342733ce7543f31e9469064",
@@ -2584,6 +2717,10 @@
         {
             "name": "Customers Social Authentication",
             "description": "Customers Social Authentication"
+        },
+        {
+            "name": "Quran Recitations",
+            "description": "Quran Recitations"
         }
     ]
 }

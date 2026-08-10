@@ -134,7 +134,7 @@ class DownloadQuranRecitations extends Command
         return QuranRecitation::query()->updateOrCreate(
             ['slug' => $reciter['slug']],
             [
-                'name' => $reciter['name'],
+                'name_en' => $reciter['name'],
                 'bitrate' => $reciter['bitrate'],
                 'source_url' => $sourceUrl,
             ],

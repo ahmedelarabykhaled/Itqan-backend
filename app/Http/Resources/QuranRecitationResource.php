@@ -15,7 +15,7 @@ class QuranRecitationResource extends JsonResource
         return [
             'id' => $this->id,
             'slug' => $this->slug,
-            'name' => $this->name,
+            'name' => $this->localizedName(),
             'bitrate' => $this->bitrate,
             'source_url' => $this->source_url,
             'ayahs_count' => $this->whenCounted('ayahs'),

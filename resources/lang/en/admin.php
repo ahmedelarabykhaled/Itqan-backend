@@ -32,6 +32,9 @@ return [
         'ayah_number' => 'Ayah number',
         'memorized_at' => 'Memorized at',
         'name' => 'Name',
+        'name_en' => 'English name',
+        'name_ar' => 'Arabic name',
+        'status' => 'Status',
         'parts_count' => 'Parts',
         'password' => 'Password',
         'provider' => 'Sign-up method',
@@ -99,6 +102,11 @@ return [
             'label' => 'Recitation',
             'plural_label' => 'Quran recitations',
         ],
+    ],
+
+    'quran_recitation_status' => [
+        'enabled' => 'Enabled',
+        'disabled' => 'Disabled',
     ],
 
     'audience' => [

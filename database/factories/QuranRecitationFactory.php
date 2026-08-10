@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\QuranRecitationStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,9 +21,18 @@ class QuranRecitationFactory extends Factory
 
         return [
             'slug' => $slug,
-            'name' => 'Abdul Basit Mujawwad 128kbps',
+            'name_en' => 'Abdul Basit Mujawwad 128kbps',
+            'name_ar' => 'عبد الباسط مجود 128kbps',
             'bitrate' => '128kbps',
             'source_url' => "https://everyayah.com/data/{$slug}",
+            'status' => QuranRecitationStatus::Enabled,
         ];
+    }
+
+    public function disabled(): static
+    {
+        return $this->state(fn (): array => [
+            'status' => QuranRecitationStatus::Disabled,
+        ]);
     }
 }

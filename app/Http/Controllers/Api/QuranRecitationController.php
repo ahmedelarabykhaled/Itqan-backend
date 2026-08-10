@@ -30,8 +30,9 @@ class QuranRecitationController extends Controller
     public function index(): JsonResponse
     {
         $recitations = QuranRecitation::query()
+            ->enabled()
             ->withCount('ayahs')
-            ->orderBy('name')
+            ->orderBy('name_en')
             ->get();
 
         return ApiResponse::success(
@@ -62,10 +63,7 @@ class QuranRecitationController extends Controller
      */
     public function show(string $slug): JsonResponse
     {
-        $recitation = QuranRecitation::query()
-            ->where('slug', $slug)
-            ->withCount('ayahs')
-            ->first();
+        $recitation = $this->findEnabledRecitation($slug);
 
         if ($recitation === null) {
             return ApiResponse::error(
@@ -103,7 +101,7 @@ class QuranRecitationController extends Controller
      */
     public function ayahs(Request $request, string $slug): JsonResponse
     {
-        $recitation = QuranRecitation::query()->where('slug', $slug)->first();
+        $recitation = $this->findEnabledRecitation($slug);
 
         if ($recitation === null) {
             return ApiResponse::error(
@@ -151,7 +149,7 @@ class QuranRecitationController extends Controller
      */
     public function ayah(string $slug, int $surah, int $ayah): JsonResponse
     {
-        $recitation = QuranRecitation::query()->where('slug', $slug)->first();
+        $recitation = $this->findEnabledRecitation($slug);
 
         if ($recitation === null) {
             return ApiResponse::error(
@@ -178,5 +176,14 @@ class QuranRecitationController extends Controller
             data: new QuranRecitationAyahResource($recitationAyah),
             status: 200,
         );
+    }
+
+    private function findEnabledRecitation(string $slug): ?QuranRecitation
+    {
+        return QuranRecitation::query()
+            ->enabled()
+            ->where('slug', $slug)
+            ->withCount('ayahs')
+            ->first();
     }
 }

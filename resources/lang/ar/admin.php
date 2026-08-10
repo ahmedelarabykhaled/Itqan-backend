@@ -32,6 +32,9 @@ return [
         'ayah_number' => 'رقم الآية',
         'memorized_at' => 'تاريخ الحفظ',
         'name' => 'الاسم',
+        'name_en' => 'الاسم بالإنجليزية',
+        'name_ar' => 'الاسم بالعربية',
+        'status' => 'الحالة',
         'parts_count' => 'عدد الأجزاء',
         'password' => 'كلمة المرور',
         'provider' => 'طريقة التسجيل',
@@ -99,6 +102,11 @@ return [
             'label' => 'تلاوة',
             'plural_label' => 'أصوات المشايخ',
         ],
+    ],
+
+    'quran_recitation_status' => [
+        'enabled' => 'مفعّل',
+        'disabled' => 'معطّل',
     ],
 
     'audience' => [
