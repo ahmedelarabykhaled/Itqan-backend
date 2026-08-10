@@ -13,13 +13,15 @@ class UnzipQuranRecitations extends Command
     protected $signature = 'quran-recitations:unzip
                             {--reciters=* : Specific reciter slugs to process (defaults to all)}
                             {--force : Re-extract and overwrite existing MP3 files}
+                            {--delete-zip : Delete the ZIP archive after a successful MP3 extract}
                             {--chunk=200 : Number of ayahs to process per progress batch}';
 
-    protected $description = 'Extract MP3 files from existing Quran recitation ZIP archives and store their paths';
+    protected $description = 'Extract MP3 files from Quran recitation ZIP archives, optionally deleting the ZIP afterward';
 
     public function handle(): int
     {
         $force = (bool) $this->option('force');
+        $deleteZip = (bool) $this->option('delete-zip');
         $chunk = max(1, (int) $this->option('chunk'));
 
         $query = QuranRecitationAyah::query()
@@ -45,7 +47,7 @@ class UnzipQuranRecitations extends Command
             $query->whereIn('quran_recitation_id', $recitationIds);
         }
 
-        if (! $force) {
+        if (! $force && ! $deleteZip) {
             $query->where(function ($builder): void {
                 $builder->whereNull('mp3_file')
                     ->orWhere('mp3_file', '');
@@ -60,24 +62,37 @@ class UnzipQuranRecitations extends Command
             return self::SUCCESS;
         }
 
-        $this->info("Extracting MP3 files for {$total} ayah archive(s)...");
+        $this->info(sprintf(
+            'Processing %d ayah archive(s)%s...',
+            $total,
+            $deleteZip ? ' (ZIP will be deleted after extract)' : '',
+        ));
 
         $bar = $this->output->createProgressBar($total);
         $bar->start();
 
         $extracted = 0;
         $skipped = 0;
+        $deleted = 0;
         $failed = 0;
 
-        $query->orderBy('id')->chunkById($chunk, function ($ayahs) use ($force, $bar, &$extracted, &$skipped, &$failed): void {
+        $query->orderBy('id')->chunkById($chunk, function ($ayahs) use ($force, $deleteZip, $bar, &$extracted, &$skipped, &$deleted, &$failed): void {
             foreach ($ayahs as $ayah) {
-                $result = $this->extractAyah($ayah, $force);
+                $result = $this->processAyah($ayah, $force, $deleteZip);
 
-                match ($result) {
-                    'extracted' => $extracted++,
-                    'skipped' => $skipped++,
-                    default => $failed++,
-                };
+                if ($result['extracted']) {
+                    $extracted++;
+                } elseif ($result['skipped']) {
+                    $skipped++;
+                }
+
+                if ($result['deleted']) {
+                    $deleted++;
+                }
+
+                if ($result['failed']) {
+                    $failed++;
+                }
 
                 $bar->advance();
             }
@@ -86,25 +101,59 @@ class UnzipQuranRecitations extends Command
         $bar->finish();
         $this->newLine(2);
 
-        $this->info("Done. Extracted: {$extracted}, skipped: {$skipped}, failed: {$failed}.");
+        $this->info("Done. Extracted: {$extracted}, skipped: {$skipped}, zip deleted: {$deleted}, failed: {$failed}.");
 
-        return $failed > 0 && $extracted === 0 ? self::FAILURE : self::SUCCESS;
+        return $failed > 0 && $extracted === 0 && $deleted === 0 ? self::FAILURE : self::SUCCESS;
     }
 
-    private function extractAyah(QuranRecitationAyah $ayah, bool $force): string
+    /**
+     * @return array{extracted: bool, skipped: bool, deleted: bool, failed: bool}
+     */
+    private function processAyah(QuranRecitationAyah $ayah, bool $force, bool $deleteZip): array
     {
-        $zipRelativePath = (string) $ayah->file;
-        $mp3RelativePath = $this->mp3PathFromZip($zipRelativePath);
+        $result = [
+            'extracted' => false,
+            'skipped' => false,
+            'deleted' => false,
+            'failed' => false,
+        ];
 
-        if (! $force && filled($ayah->mp3_file) && Storage::disk('public')->exists($ayah->mp3_file)) {
-            return 'skipped';
+        $zipRelativePath = (string) $ayah->file;
+        $mp3RelativePath = filled($ayah->mp3_file)
+            ? (string) $ayah->mp3_file
+            : $this->mp3PathFromZip($zipRelativePath);
+
+        $hasMp3 = filled($ayah->mp3_file) && Storage::disk('public')->exists($ayah->mp3_file);
+
+        if ($hasMp3 && ! $force) {
+            $result['skipped'] = true;
+        } else {
+            $extracted = $this->extractMp3($ayah, $zipRelativePath, $mp3RelativePath);
+
+            if (! $extracted) {
+                $result['failed'] = true;
+
+                return $result;
+            }
+
+            $result['extracted'] = true;
+            $ayah->refresh();
         }
 
+        if ($deleteZip) {
+            $result['deleted'] = $this->deleteZip($ayah, $zipRelativePath);
+        }
+
+        return $result;
+    }
+
+    private function extractMp3(QuranRecitationAyah $ayah, string $zipRelativePath, string $mp3RelativePath): bool
+    {
         if (! Storage::disk('public')->exists($zipRelativePath)) {
             $this->newLine();
             $this->error("Missing zip: {$zipRelativePath}");
 
-            return 'failed';
+            return false;
         }
 
         $absoluteZipPath = Storage::disk('public')->path($zipRelativePath);
@@ -114,7 +163,7 @@ class UnzipQuranRecitations extends Command
             $this->newLine();
             $this->error("Could not open zip: {$zipRelativePath}");
 
-            return 'failed';
+            return false;
         }
 
         $entryName = $this->findMp3Entry($zip);
@@ -124,7 +173,7 @@ class UnzipQuranRecitations extends Command
             $this->newLine();
             $this->error("No MP3 entry found in zip: {$zipRelativePath}");
 
-            return 'failed';
+            return false;
         }
 
         $mp3Contents = $zip->getFromName($entryName);
@@ -134,7 +183,7 @@ class UnzipQuranRecitations extends Command
             $this->newLine();
             $this->error("Could not read MP3 entry from zip: {$zipRelativePath}");
 
-            return 'failed';
+            return false;
         }
 
         Storage::disk('public')->put($mp3RelativePath, $mp3Contents);
@@ -143,7 +192,27 @@ class UnzipQuranRecitations extends Command
             'mp3_file' => $mp3RelativePath,
         ]);
 
-        return 'extracted';
+        return true;
+    }
+
+    private function deleteZip(QuranRecitationAyah $ayah, string $zipRelativePath): bool
+    {
+        if (! filled($ayah->mp3_file) || ! Storage::disk('public')->exists($ayah->mp3_file)) {
+            $this->newLine();
+            $this->error("Refusing to delete zip without an existing MP3: {$zipRelativePath}");
+
+            return false;
+        }
+
+        if (Storage::disk('public')->exists($zipRelativePath)) {
+            Storage::disk('public')->delete($zipRelativePath);
+        }
+
+        $ayah->update([
+            'file' => null,
+        ]);
+
+        return true;
     }
 
     private function mp3PathFromZip(string $zipRelativePath): string
