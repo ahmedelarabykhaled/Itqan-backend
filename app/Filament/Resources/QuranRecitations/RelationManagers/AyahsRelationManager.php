@@ -7,6 +7,7 @@ use App\Filament\Resources\QuranRecitations\Tables\QuranRecitationAyahsTable;
 use Filament\Actions\CreateAction;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Schemas\Schema;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,7 +29,9 @@ class AyahsRelationManager extends RelationManager
     {
         return QuranRecitationAyahsTable::configure(
             $table->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->modalWidth(Width::FiveExtraLarge)
+                    ->modalHeading(__('admin.actions.create_recitation_ayah')),
             ]),
         );
     }

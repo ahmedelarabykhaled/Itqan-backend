@@ -69,6 +69,13 @@ return [
 
     'actions' => [
         'download' => 'Download',
+        'create_recitation_ayah' => 'Add recitation ayah',
+        'edit_recitation_ayah' => 'Edit recitation ayah',
+    ],
+
+    'helpers' => [
+        'recitation_zip_file' => 'Upload or replace the compressed ZIP for this ayah.',
+        'recitation_mp3_file' => 'Upload or replace the MP3 audio for this ayah.',
     ],
 
     'relations' => [

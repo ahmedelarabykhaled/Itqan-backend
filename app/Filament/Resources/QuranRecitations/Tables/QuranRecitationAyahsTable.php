@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\QuranRecitations\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Support\Enums\Width;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Storage;
@@ -45,7 +47,10 @@ class QuranRecitationAyahsTable
                 //
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->modalWidth(Width::FiveExtraLarge)
+                    ->modalHeading(__('admin.actions.edit_recitation_ayah')),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

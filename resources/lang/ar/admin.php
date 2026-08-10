@@ -69,6 +69,13 @@ return [
 
     'actions' => [
         'download' => 'تنزيل',
+        'create_recitation_ayah' => 'إضافة آية تلاوة',
+        'edit_recitation_ayah' => 'تعديل آية التلاوة',
+    ],
+
+    'helpers' => [
+        'recitation_zip_file' => 'يمكنك رفع أو استبدال الملف المضغوط (ZIP) لهذه الآية.',
+        'recitation_mp3_file' => 'يمكنك رفع أو استبدال ملف الصوت (MP3) لهذه الآية.',
     ],
 
     'relations' => [
