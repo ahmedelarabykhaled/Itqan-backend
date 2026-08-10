@@ -23,6 +23,12 @@ class QuranRecitationAyahsTable
                     ->copyable()
                     ->toggleable(),
                 TextColumn::make('file')
+                    ->label(__('admin.attributes.file'))
+                    ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
+                    ->url(fn (?string $state): ?string => $state ? Storage::disk('public')->url($state) : null)
+                    ->openUrlInNewTab(),
+                TextColumn::make('mp3_file')
+                    ->label(__('admin.attributes.mp3_file'))
                     ->formatStateUsing(fn (?string $state): string => $state ? basename($state) : '-')
                     ->url(fn (?string $state): ?string => $state ? Storage::disk('public')->url($state) : null)
                     ->openUrlInNewTab(),

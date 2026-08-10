@@ -24,9 +24,20 @@ class QuranRecitationAyahForm
                 TextInput::make('source_url')
                     ->url(),
                 FileUpload::make('file')
+                    ->label(__('admin.attributes.file'))
                     ->acceptedFileTypes([
                         'application/zip',
                         'application/x-zip-compressed',
+                    ])
+                    ->disk('public')
+                    ->directory('quran-recitation-ayahs')
+                    ->visibility('public')
+                    ->downloadable(),
+                FileUpload::make('mp3_file')
+                    ->label(__('admin.attributes.mp3_file'))
+                    ->acceptedFileTypes([
+                        'audio/mpeg',
+                        'audio/mp3',
                     ])
                     ->disk('public')
                     ->directory('quran-recitation-ayahs')

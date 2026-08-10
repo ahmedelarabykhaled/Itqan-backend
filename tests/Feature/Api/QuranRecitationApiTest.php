@@ -109,14 +109,17 @@ class QuranRecitationApiTest extends TestCase
         ]);
 
         $filePath = 'quran-recitation-ayahs/'.$recitation->slug.'/001001.zip';
+        $mp3Path = 'quran-recitation-ayahs/'.$recitation->slug.'/001001.mp3';
 
         Storage::disk('public')->put($filePath, 'zip-bytes');
+        Storage::disk('public')->put($mp3Path, 'mp3-bytes');
 
         QuranRecitationAyah::factory()->create([
             'quran_recitation_id' => $recitation->id,
             'surah' => 1,
             'ayah' => 1,
             'file' => $filePath,
+            'mp3_file' => $mp3Path,
         ]);
 
         $response = $this->getJson('/api/v1/quran/recitations/'.$recitation->slug.'/ayahs/1/1')
@@ -127,6 +130,10 @@ class QuranRecitationApiTest extends TestCase
         $this->assertStringContainsString(
             $filePath,
             (string) $response->json('data.file_url'),
+        );
+        $this->assertStringContainsString(
+            $mp3Path,
+            (string) $response->json('data.mp3_url'),
         );
     }
 

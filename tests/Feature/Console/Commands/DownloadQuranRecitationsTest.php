@@ -19,29 +19,26 @@ class DownloadQuranRecitationsTest extends TestCase
         Storage::fake('public');
 
         $mp3Contents = 'fake-mp3-bytes';
+        $slug = 'Test_Download_Reciter_'.uniqid().'_64kbps';
 
         Http::fake([
-            'https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps/001000.mp3' => Http::response('', 404),
-            'https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps/001001.mp3' => Http::response($mp3Contents, 200),
-            'https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps/001002.mp3' => Http::response($mp3Contents, 200),
+            "https://everyayah.com/data/{$slug}/001000.mp3" => Http::response('', 404),
+            "https://everyayah.com/data/{$slug}/001001.mp3" => Http::response($mp3Contents, 200),
+            "https://everyayah.com/data/{$slug}/001002.mp3" => Http::response($mp3Contents, 200),
         ]);
 
         $this->artisan('quran-recitations:download', [
-            '--reciters' => ['Abdul_Basit_Mujawwad_128kbps'],
+            '--reciters' => [$slug],
             '--surah' => 1,
             '--limit-ayahs' => 2,
             '--concurrency' => 2,
         ])->assertSuccessful();
 
-        $recitation = QuranRecitation::query()->where('slug', 'Abdul_Basit_Mujawwad_128kbps')->first();
+        $recitation = QuranRecitation::query()->where('slug', $slug)->first();
 
         $this->assertNotNull($recitation);
-        $this->assertSame(
-            'https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps',
-            $recitation->source_url,
-        );
-        $this->assertSame('128kbps', $recitation->bitrate);
-
+        $this->assertSame("https://everyayah.com/data/{$slug}", $recitation->source_url);
+        $this->assertSame('64kbps', $recitation->bitrate);
         $this->assertSame(1, $recitation->ayahs()->count());
 
         $ayah = QuranRecitationAyah::query()
@@ -51,12 +48,15 @@ class DownloadQuranRecitationsTest extends TestCase
             ->first();
 
         $this->assertNotNull($ayah);
-        $this->assertSame('quran-recitation-ayahs/Abdul_Basit_Mujawwad_128kbps/001001.zip', $ayah->file);
-        Storage::disk('public')->assertExists('quran-recitation-ayahs/Abdul_Basit_Mujawwad_128kbps/001001.zip');
+        $this->assertSame("quran-recitation-ayahs/{$slug}/001001.zip", $ayah->file);
+        $this->assertSame("quran-recitation-ayahs/{$slug}/001001.mp3", $ayah->mp3_file);
+        Storage::disk('public')->assertExists("quran-recitation-ayahs/{$slug}/001001.zip");
+        Storage::disk('public')->assertExists("quran-recitation-ayahs/{$slug}/001001.mp3");
+        $this->assertSame($mp3Contents, Storage::disk('public')->get("quran-recitation-ayahs/{$slug}/001001.mp3"));
 
         $tempZip = tempnam(sys_get_temp_dir(), 'assert-zip-');
         $this->assertNotFalse($tempZip);
-        file_put_contents($tempZip, Storage::disk('public')->get('quran-recitation-ayahs/Abdul_Basit_Mujawwad_128kbps/001001.zip'));
+        file_put_contents($tempZip, Storage::disk('public')->get("quran-recitation-ayahs/{$slug}/001001.zip"));
 
         $zip = new ZipArchive;
         $this->assertTrue($zip->open($tempZip));
@@ -71,28 +71,30 @@ class DownloadQuranRecitationsTest extends TestCase
     {
         Storage::fake('public');
 
+        $slug = 'Test_Skip_Reciter_'.uniqid().'_64kbps';
+
         Storage::disk('public')->put(
-            'quran-recitation-ayahs/Abdul_Basit_Mujawwad_128kbps/001001.zip',
+            "quran-recitation-ayahs/{$slug}/001001.zip",
             'existing-zip',
         );
 
         $recitation = QuranRecitation::query()->create([
-            'slug' => 'Abdul_Basit_Mujawwad_128kbps',
-            'name_en' => 'Abdul Basit Mujawwad 128kbps',
-            'bitrate' => '128kbps',
-            'source_url' => 'https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps',
+            'slug' => $slug,
+            'name_en' => 'Test Skip Reciter',
+            'bitrate' => '64kbps',
+            'source_url' => "https://everyayah.com/data/{$slug}",
         ]);
 
         QuranRecitationAyah::query()->create([
             'quran_recitation_id' => $recitation->id,
             'surah' => 1,
             'ayah' => 0,
-            'source_url' => 'https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps/001000.mp3',
-            'file' => 'quran-recitation-ayahs/Abdul_Basit_Mujawwad_128kbps/001000.zip',
+            'source_url' => "https://everyayah.com/data/{$slug}/001000.mp3",
+            'file' => "quran-recitation-ayahs/{$slug}/001000.zip",
         ]);
 
         Storage::disk('public')->put(
-            'quran-recitation-ayahs/Abdul_Basit_Mujawwad_128kbps/001000.zip',
+            "quran-recitation-ayahs/{$slug}/001000.zip",
             'existing-basmalah-zip',
         );
 
@@ -100,20 +102,20 @@ class DownloadQuranRecitationsTest extends TestCase
             'quran_recitation_id' => $recitation->id,
             'surah' => 1,
             'ayah' => 1,
-            'source_url' => 'https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps/001001.mp3',
-            'file' => 'quran-recitation-ayahs/Abdul_Basit_Mujawwad_128kbps/001001.zip',
+            'source_url' => "https://everyayah.com/data/{$slug}/001001.mp3",
+            'file' => "quran-recitation-ayahs/{$slug}/001001.zip",
         ]);
 
         Http::fake();
 
         $this->artisan('quran-recitations:download', [
-            '--reciters' => ['Abdul_Basit_Mujawwad_128kbps'],
+            '--reciters' => [$slug],
             '--surah' => 1,
             '--limit-ayahs' => 2,
         ])->assertSuccessful();
 
         Http::assertNothingSent();
-        $this->assertSame('existing-zip', Storage::disk('public')->get('quran-recitation-ayahs/Abdul_Basit_Mujawwad_128kbps/001001.zip'));
-        $this->assertSame('existing-basmalah-zip', Storage::disk('public')->get('quran-recitation-ayahs/Abdul_Basit_Mujawwad_128kbps/001000.zip'));
+        $this->assertSame('existing-zip', Storage::disk('public')->get("quran-recitation-ayahs/{$slug}/001001.zip"));
+        $this->assertSame('existing-basmalah-zip', Storage::disk('public')->get("quran-recitation-ayahs/{$slug}/001000.zip"));
     }
 }

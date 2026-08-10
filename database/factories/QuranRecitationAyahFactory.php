@@ -23,6 +23,7 @@ class QuranRecitationAyahFactory extends Factory
             'ayah' => 1,
             'source_url' => 'https://everyayah.com/data/Abdul_Basit_Mujawwad_128kbps/001001.mp3',
             'file' => null,
+            'mp3_file' => null,
         ];
     }
 }

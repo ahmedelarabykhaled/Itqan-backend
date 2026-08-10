@@ -21,6 +21,9 @@ class QuranRecitationAyahResource extends JsonResource
             'file_url' => filled($this->file)
                 ? Storage::disk('public')->url($this->file)
                 : null,
+            'mp3_url' => filled($this->mp3_file)
+                ? Storage::disk('public')->url($this->mp3_file)
+                : null,
         ];
     }
 }

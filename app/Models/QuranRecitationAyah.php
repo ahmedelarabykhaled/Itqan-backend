@@ -17,6 +17,7 @@ class QuranRecitationAyah extends Model
         'ayah',
         'source_url',
         'file',
+        'mp3_file',
     ];
 
     public function quranRecitation(): BelongsTo

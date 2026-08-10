@@ -247,6 +247,9 @@ class DownloadQuranRecitations extends Command
 
         Storage::disk('public')->put($storagePath, $zipBinary);
 
+        $mp3StoragePath = "quran-recitation-ayahs/{$recitation->slug}/{$label}.mp3";
+        Storage::disk('public')->put($mp3StoragePath, $response->body());
+
         QuranRecitationAyah::query()->updateOrCreate(
             [
                 'quran_recitation_id' => $recitation->id,
@@ -256,6 +259,7 @@ class DownloadQuranRecitations extends Command
             [
                 'source_url' => $sourceUrl,
                 'file' => $storagePath,
+                'mp3_file' => $mp3StoragePath,
             ],
         );
     }
