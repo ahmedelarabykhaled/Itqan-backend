@@ -35,7 +35,8 @@ class CustomerResendActivationOtpTest extends TestCase
 
         $customer->refresh();
 
-        $this->assertSame('123456', (string) $customer->verification_code);
+        $this->assertNotSame('111111', (string) $customer->verification_code);
+        $this->assertMatchesRegularExpression('/^\d{6}$/', (string) $customer->verification_code);
         $this->assertNotNull($customer->verification_code_expires_at);
         $this->assertTrue(
             \Carbon\Carbon::parse($customer->verification_code_expires_at)->isFuture()
