@@ -2,16 +2,12 @@
 
 namespace App\Repositories;
 
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\CustomerRepository;
 use App\Entities\Customer;
-use App\Validators\CustomerValidator;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class CustomerRepositoryEloquent.
- *
- * @package namespace App\Repositories;
  */
 class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepository
 {
@@ -25,8 +21,6 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
         return Customer::class;
     }
 
-    
-
     /**
      * Boot up the repository, pushing criteria
      */
@@ -34,5 +28,4 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
 }

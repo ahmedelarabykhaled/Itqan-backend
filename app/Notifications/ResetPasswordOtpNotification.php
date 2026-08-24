@@ -2,14 +2,15 @@
 
 namespace App\Notifications;
 
-use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class ResetPasswordOtpNotification extends Notification implements ShouldQueue
 {
     use Queueable;
+
     protected $otp;
 
     public function __construct($otp)
@@ -29,7 +30,7 @@ class ResetPasswordOtpNotification extends Notification implements ShouldQueue
             ->greeting('Hello!')
             ->line('You requested to reset your password.')
             ->line('Your verification code is:')
-            ->line('**' . $this->otp . '**')
+            ->line('**'.$this->otp.'**')
             ->line('This code will expire in 10 minutes.')
             ->line('If you did not request this, please ignore.');
     }

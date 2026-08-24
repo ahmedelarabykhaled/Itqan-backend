@@ -7,11 +7,21 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class QuranRecitation extends Model
 {
     /** @use HasFactory<\Database\Factories\QuranRecitationFactory> */
     use HasFactory;
+
+    protected static function booted(): void
+    {
+        static::deleted(function (QuranRecitation $recitation): void {
+            if (filled($recitation->slug)) {
+                Storage::disk('public')->deleteDirectory("quran-recitation-ayahs/{$recitation->slug}");
+            }
+        });
+    }
 
     protected $fillable = [
         'slug',

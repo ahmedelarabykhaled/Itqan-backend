@@ -4,8 +4,6 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\CountryTranslationResource;
-
 
 class CountryResource extends JsonResource
 {
@@ -19,7 +17,7 @@ class CountryResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'translations' => CountryTranslationResource::collection($this->customTranslations)
+            'translations' => CountryTranslationResource::collection($this->customTranslations),
         ];
     }
 }

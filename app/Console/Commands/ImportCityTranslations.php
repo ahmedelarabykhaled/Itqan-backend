@@ -126,7 +126,7 @@ class ImportCityTranslations extends Command
                 }
 
                 if ($rows) {
-                    DB::table('city_translations')->upsert( 
+                    DB::table('city_translations')->upsert(
                         $rows,
                         ['city_id', 'language_code'],
                         ['name']

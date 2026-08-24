@@ -20,13 +20,13 @@ class AuthService
     public function login(CustomerLogin $request)
     {
         $customer = Customer::where('email', $request->email)->verified()->first();
-        if (!$customer || !Hash::check($request->password, $customer->password)) {
+        if (! $customer || ! Hash::check($request->password, $customer->password)) {
             return response()->json([
                 'message' => __('customers.customer_not_found'),
             ], 404);
         }
 
-        if (!$customer->email_verified_at) {
+        if (! $customer->email_verified_at) {
             return response()->json([
                 'message' => __('customers.customer_not_verified'),
             ], 401);
