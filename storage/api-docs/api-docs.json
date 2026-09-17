@@ -441,13 +441,13 @@
             }
         },
         "/api/v1/customers/auth/update": {
-            "put": {
+            "post": {
                 "tags": [
                     "Customers Authentication"
                 ],
                 "summary": "Customer update",
-                "description": "Customer update",
-                "operationId": "fbb69e36421f98cd6d7d07aae8b1e1ba",
+                "description": "Update the authenticated customer profile. Use POST with multipart/form-data to upload an avatar. PHP does not parse file uploads on PUT.",
+                "operationId": "c5643cfb37027ee3fb302971379b9db7",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/Accept-Language"
@@ -550,8 +550,8 @@
                             }
                         }
                     },
-                    "404": {
-                        "description": "Customer not found",
+                    "401": {
+                        "description": "Unauthorized",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -562,11 +562,11 @@
                                         },
                                         "status": {
                                             "type": "integer",
-                                            "example": 404
+                                            "example": 401
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Customer not found"
+                                            "example": "Unauthenticated."
                                         },
                                         "data": {
                                             "type": "null",

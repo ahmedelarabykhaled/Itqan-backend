@@ -255,11 +255,11 @@ class AuthController extends Controller
 
     // update customer
     /**
-     * @OA\Put(
+     * @OA\Post(
      *      path="/api/v1/customers/auth/update",
      *      tags={"Customers Authentication"},
      *      summary="Customer update",
-     *      description="Customer update",
+     *      description="Update the authenticated customer profile. Use POST with multipart/form-data to upload an avatar. PHP does not parse file uploads on PUT.",
      *      security={{"sanctum":{}}},
      *
      *      @OA\Parameter(ref="#/components/parameters/Accept-Language"),
@@ -327,14 +327,14 @@ class AuthController extends Controller
      *      ),
      *
      *      @OA\Response(
-     *          response=404,
-     *          description="Customer not found",
+     *          response=401,
+     *          description="Unauthorized",
      *
      *          @OA\JsonContent(
      *
      *              @OA\Property(property="success", type="boolean", example=false),
-     *              @OA\Property(property="status", type="integer", example=404),
-     *              @OA\Property(property="message", type="string", example="Customer not found"),
+     *              @OA\Property(property="status", type="integer", example=401),
+     *              @OA\Property(property="message", type="string", example="Unauthenticated."),
      *              @OA\Property(property="data", type="null", example=null),
      *              @OA\Property(property="errors", type="null", example=null)
      *          )
@@ -357,29 +357,39 @@ class AuthController extends Controller
      */
     public function update(CustomerUpdateRequest $request)
     {
-        $customer = Customer::find($request->user()->id);
-        if ($customer) {
-            $customer->name = $request->name ?? $customer->name;
-            $customer->password = Hash::make($request->password) ?? $customer->password;
-            $customer->gender = $request->gender ?? $customer->gender;
-            if ($request->hasFile('avatar')) {
-                $file_name = 'customers/avatars/'.$customer->id.'/'.time().'.'.$request->file('avatar')->getClientOriginalExtension();
-                Storage::disk('public')->putFileAs('', $request->file('avatar'), $file_name);
-                $customer->update([
-                    'avatar' => $file_name,
-                ]);
-            }
+        $customer = $request->user();
 
-            return ApiResponse::success(
-                message: __('customers.customer_updated_successfully'),
-                data: $customer,
-                status: 200
-            );
+        if ($request->filled('name')) {
+            $customer->name = $request->input('name');
         }
 
-        return ApiResponse::error(
-            message: __('customers.customer_not_found'),
-            status: 404
+        if ($request->filled('gender')) {
+            $customer->gender = $request->input('gender');
+        }
+
+        if ($request->filled('password')) {
+            $customer->password = $request->input('password');
+        }
+
+        if ($request->hasFile('avatar')) {
+            $previousAvatar = $customer->getRawOriginal('avatar');
+            $avatar = $request->file('avatar');
+            $fileName = 'customers/avatars/'.$customer->id.'/'.time().'.'.$avatar->getClientOriginalExtension();
+
+            Storage::disk('public')->putFileAs('', $avatar, $fileName);
+            $customer->avatar = $fileName;
+
+            if (is_string($previousAvatar) && $previousAvatar !== '' && ! str_starts_with($previousAvatar, 'http')) {
+                Storage::disk('public')->delete($previousAvatar);
+            }
+        }
+
+        $customer->save();
+
+        return ApiResponse::success(
+            message: __('customers.customer_updated_successfully'),
+            data: $customer->fresh(),
+            status: 200
         );
     }
 

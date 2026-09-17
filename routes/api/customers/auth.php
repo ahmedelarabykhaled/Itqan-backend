@@ -13,9 +13,8 @@ Route::post('verify-reset-otp', [AuthController::class, 'verifyResetOtp']);
 Route::post('reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
 Route::post('activate-account', [AuthController::class, 'activateAccount']);
 Route::post('resend-activation-otp', [AuthController::class, 'resendActivationOtp']);
-Route::put('update', [AuthController::class, 'update']);
 // protected routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
-    Route::put('update', [AuthController::class, 'update']);
+    Route::match(['put', 'post'], 'update', [AuthController::class, 'update']);
 });
