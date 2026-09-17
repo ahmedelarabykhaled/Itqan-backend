@@ -194,8 +194,8 @@ class AuthController extends Controller
         $customer = Customer::where('email', $request->email)->first();
         if (! $customer || ! Hash::check($request->password, $customer->password)) {
             return ApiResponse::error(
-                message: __('customers.customer_not_found'),
-                status: 404
+                message: __('customers.customer_invalid_credentials'),
+                status: 401
             );
         }
 

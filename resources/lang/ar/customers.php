@@ -4,6 +4,7 @@ return [
     // Authentication messages
     'customer_not_found' => 'المستخدم غير موجود.',
     'customer_not_verified' => 'حساب المستخدم غير مفعل.',
+    'customer_invalid_credentials' => 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
     'customer_already_verified' => 'حساب المستخدم مفعل بالفعل.',
     'customer_logged_in_successfully' => 'تم تسجيل الدخول بنجاح.',
     'customer_registered_successfully' => 'تم تسجيل الحساب بنجاح.',

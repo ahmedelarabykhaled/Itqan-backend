@@ -4,6 +4,7 @@ return [
     // Authentication messages
     'customer_not_found' => 'Customer not found.',
     'customer_not_verified' => 'Customer account is not verified.',
+    'customer_invalid_credentials' => 'Invalid email or password.',
     'customer_already_verified' => 'Customer account is already verified.',
     'customer_logged_in_successfully' => 'Customer logged in successfully.',
     'customer_registered_successfully' => 'Customer registered successfully.',
