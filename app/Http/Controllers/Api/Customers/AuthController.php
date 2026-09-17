@@ -365,9 +365,10 @@ class AuthController extends Controller
             if ($request->hasFile('avatar')) {
                 $file_name = 'customers/avatars/'.$customer->id.'/'.time().'.'.$request->file('avatar')->getClientOriginalExtension();
                 Storage::disk('public')->putFileAs('', $request->file('avatar'), $file_name);
-                $customer->avatar = $file_name;
+                $customer->update([
+                    'avatar' => $file_name,
+                ]);
             }
-            $customer->save();
 
             return ApiResponse::success(
                 message: __('customers.customer_updated_successfully'),
