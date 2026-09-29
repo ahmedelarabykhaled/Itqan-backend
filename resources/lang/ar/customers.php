@@ -14,6 +14,10 @@ return [
     'code_expired' => 'انتهت صلاحية رمز التحقق.',
     'invalid_token' => 'الرمز (token) غير صالح.',
     'token_expired' => 'انتهت صلاحية الرمز (token).',
+    'customer_logged_out_successfully' => 'تم تسجيل الخروج بنجاح.',
+    'verification_code_sent' => 'تم إرسال رمز التحقق.',
+    'password_reset_successfully' => 'تمت إعادة تعيين كلمة المرور بنجاح.',
+    'account_activated_successfully' => 'تم تفعيل الحساب بنجاح.',
     'otp_valid' => 'رمز التحقق صحيح.',
 
     // Name validation

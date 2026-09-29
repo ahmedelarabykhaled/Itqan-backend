@@ -14,6 +14,10 @@ return [
     'code_expired' => 'Code expired.',
     'invalid_token' => 'Invalid token.',
     'token_expired' => 'Token expired.',
+    'customer_logged_out_successfully' => 'Customer logged out successfully.',
+    'verification_code_sent' => 'Verification code sent.',
+    'password_reset_successfully' => 'Password reset successfully.',
+    'account_activated_successfully' => 'Account activated successfully.',
     'otp_valid' => 'OTP is valid.',
 
     // Name validation

@@ -97,7 +97,7 @@ class AuthController extends Controller
         $customer->notify(new ActivateAccountOtpNotification($otp));
 
         return ApiResponse::success(
-            message: __('messages.customer_registered_successfully'),
+            message: __('customers.customer_registered_successfully'),
             data: $customer,
             status: 200
         );
@@ -489,7 +489,7 @@ class AuthController extends Controller
         $customer->notify(new ResetPasswordOtpNotification($otp));
 
         return ApiResponse::success(
-            message: 'Verification code sent',
+            message: __('customers.verification_code_sent'),
             data: [
                 'email' => $customer->email,
             ],
@@ -780,7 +780,7 @@ class AuthController extends Controller
             ->delete();
 
         return ApiResponse::success(
-            message: 'Password reset successfully',
+            message: __('customers.password_reset_successfully'),
             data: $customer,
             status: 200
         );
@@ -912,7 +912,7 @@ class AuthController extends Controller
         $customer->token = $token;
 
         return ApiResponse::success(
-            message: 'Account activated successfully',
+            message: __('customers.account_activated_successfully'),
             data: $customer,
             status: 200
         );

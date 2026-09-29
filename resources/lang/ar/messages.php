@@ -18,4 +18,6 @@ return [
     'quran_recitation_ayahs_fetched_successfully' => 'تم جلب ملفات آيات التلاوة بنجاح',
     'quran_recitation_ayah_fetched_successfully' => 'تم جلب ملف آية التلاوة بنجاح',
     'quran_recitation_ayah_not_found' => 'ملف آية التلاوة غير موجود',
+    'forbidden' => 'غير مسموح بالوصول.',
+    'resource_not_found' => 'المورد غير موجود.',
 ];

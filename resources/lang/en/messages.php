@@ -18,4 +18,6 @@ return [
     'quran_recitation_ayahs_fetched_successfully' => 'Quran recitation ayahs fetched successfully',
     'quran_recitation_ayah_fetched_successfully' => 'Quran recitation ayah fetched successfully',
     'quran_recitation_ayah_not_found' => 'Quran recitation ayah not found',
+    'forbidden' => 'Forbidden.',
+    'resource_not_found' => 'Resource not found.',
 ];

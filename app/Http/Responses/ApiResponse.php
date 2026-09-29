@@ -81,18 +81,18 @@ class ApiResponse
      * Forbidden (403)
      */
     public static function forbidden(
-        string $message = 'Forbidden'
+        ?string $message = null
     ): JsonResponse {
-        return self::error($message, 403);
+        return self::error($message ?? __('messages.forbidden'), 403);
     }
 
     /**
      * Not Found (404)
      */
     public static function notFound(
-        string $message = 'Resource not found'
+        ?string $message = null
     ): JsonResponse {
-        return self::error($message, 404);
+        return self::error($message ?? __('messages.resource_not_found'), 404);
     }
 
     /**
